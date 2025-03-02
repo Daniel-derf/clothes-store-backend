@@ -15,7 +15,7 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/products (GET)', () => {
+  it('should get all products', () => {
     return request(app.getHttpServer())
       .get('/products')
       .expect(200)
@@ -35,7 +35,7 @@ describe('AppController (e2e)', () => {
       });
   });
 
-  it('/products/:id (GET)', () => {
+  it('should get one product by ID', () => {
     return request(app.getHttpServer())
       .get('/products/1')
       .expect(200)
@@ -50,5 +50,19 @@ describe('AppController (e2e)', () => {
         expect(product).toHaveProperty('ratingId');
         expect(product).toHaveProperty('availableSizeQtt');
       });
+  });
+
+  it('should get an error by trying to get a inexistent product by ID', () => {
+    return request(app.getHttpServer()).get('/products/90').expect(404);
+  });
+
+  it('should delete a product by id', async () => {
+    await request(app.getHttpServer()).delete('/products/1').expect(204);
+
+    await request(app.getHttpServer()).get('/products/1').expect(404);
+  });
+
+  it('should get an error by trying to delete a inexistent product by ID', async () => {
+    await request(app.getHttpServer()).delete('/products/999').expect(404);
   });
 });

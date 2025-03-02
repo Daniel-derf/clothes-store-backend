@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  NotFoundException,
+  HttpCode,
 } from '@nestjs/common';
 
 // dtos
@@ -39,6 +41,17 @@ export class ProductsController {
 
     const output = await useCase.execute(+id);
 
+    if (!output) throw new NotFoundException(`The product ${id} was not found`);
+
     return output;
+  }
+
+  @Delete(':id')
+  @HttpCode(204)
+  async deleteById(@Param() { id }) {
+    const product = await this.repository.findById(+id);
+
+    if (product) await this.repository.delete(+id);
+    else throw new NotFoundException(`The product ${id} was not found`);
   }
 }
