@@ -156,4 +156,73 @@ describe('Tests by routes using in-memory test repository', () => {
         expect(jwt).toBeUndefined();
       });
   });
+
+  it('should register a new client', async () => {
+    const createUserDto = {
+      email: 'john@mail.com',
+      password: 'StrongPassword@1256!',
+      name: 'John Doe',
+    };
+
+    await request(app.getHttpServer())
+      .post('/auth/register')
+      .send(createUserDto)
+      .expect(201);
+
+    const { password, email } = createUserDto;
+
+    await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({ password, email })
+      .expect((res) => {
+        const { jwt } = res.body;
+
+        expect(jwt).toBeUndefined();
+      });
+  });
+
+  // Users
+  it('should get all users', async () => {
+    await request(app.getHttpServer())
+      .get('/users')
+      .expect(200)
+      .expect((res) => {
+        const users = res.body;
+
+        expect(users.length).toBeGreaterThan(0);
+
+        users.forEach((user) => {
+          expect(user).toHaveProperty('id');
+          expect(user).toHaveProperty('name');
+          expect(user).toHaveProperty('email');
+          expect(user).toHaveProperty('ordersIds');
+          expect(user).toHaveProperty('ratingsIds');
+          expect(user).toHaveProperty('addressesIds');
+        });
+      });
+  });
+
+  it('should get one user by ID', async () => {
+    await request(app.getHttpServer())
+      .get('/users/1')
+      .expect(200)
+      .expect((res) => {
+        const user = res.body;
+
+        expect(user).toHaveProperty('id');
+        expect(user).toHaveProperty('name');
+        expect(user).toHaveProperty('email');
+        expect(user).toHaveProperty('ordersIds');
+        expect(user).toHaveProperty('ratingsIds');
+      });
+  });
+
+  // Orders
+  it('should get all orders', async () => {});
+
+  it('should get all user orders', async () => {});
+
+  it('should get one specific user order', async () => {});
+
+  it('should make a new user order', async () => {});
 });
