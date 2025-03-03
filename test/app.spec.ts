@@ -65,4 +65,38 @@ describe('AppController (e2e)', () => {
   it('should get an error by trying to delete a inexistent product by ID', async () => {
     await request(app.getHttpServer()).delete('/products/999').expect(404);
   });
+
+  it('should register a new product', async () => {
+    const newProduct = {
+      name: 'New Product',
+      price: 150,
+      sex: 'M',
+      description: 'New product description',
+      ratingId: 1,
+      availableSizeQtt: { gg: 10 },
+    };
+
+    await request(app.getHttpServer())
+      .post('/products')
+      .send(newProduct)
+      .expect(201);
+
+    await request(app.getHttpServer())
+      .get('/products/6')
+      .expect(200)
+      .expect((res) => {
+        const product = res.body;
+
+        expect(product).toHaveProperty('id');
+        expect(product).toHaveProperty('name', newProduct.name);
+        expect(product).toHaveProperty('price', newProduct.price);
+        expect(product).toHaveProperty('sex', newProduct.sex);
+        expect(product).toHaveProperty('description', newProduct.description);
+        expect(product).toHaveProperty('ratingId', newProduct.ratingId);
+        expect(product).toHaveProperty(
+          'availableSizeQtt',
+          newProduct.availableSizeQtt,
+        );
+      });
+  });
 });

@@ -24,7 +24,22 @@ export class InMemoryProductsRepository implements IProductsRepository {
     if (index !== -1) {
       this.products[index] = product;
     } else {
-      this.products.push(product);
+      const id = this.products.length + 1;
+
+      const { name, price, sex, description, ratingId, availableSizeQtt } =
+        product;
+
+      const newProduct = new Product(
+        id,
+        name,
+        price,
+        sex,
+        description,
+        ratingId,
+        availableSizeQtt,
+      );
+
+      this.products.push(newProduct);
     }
   }
 

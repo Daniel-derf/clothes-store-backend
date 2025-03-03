@@ -16,6 +16,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 
 // use cases
 import FindAllProductsUseCase from './use-cases/FindAllProducts.use-case';
+import RegisterProductUseCase from './use-cases/RegisterProduct.use-case';
 
 // repositories
 import { InMemoryProductsRepository } from './repository/products.in-memory.repository';
@@ -48,6 +49,13 @@ export class ProductsController {
     if (!output) throw new NotFoundException(`The product ${id} was not found`);
 
     return output;
+  }
+
+  @Post()
+  async create(@Body() createProductDto: CreateProductDto) {
+    const useCase = new RegisterProductUseCase(this.repository);
+
+    await useCase.execute(createProductDto);
   }
 
   @Delete(':id')
