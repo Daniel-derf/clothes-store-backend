@@ -140,4 +140,20 @@ describe('AppController (e2e)', () => {
         expect(jwt.length).toBeGreaterThan(5);
       });
   });
+
+  it('should not get a JWT by doing login with incorrect credentials', async () => {
+    const authData = {
+      email: 'teste@email.com',
+      password: 'incorrect password',
+    };
+
+    await request(app.getHttpServer())
+      .post('/auth/login')
+      .send(authData)
+      .expect((res) => {
+        const { jwt } = res.body;
+
+        expect(jwt).toBeUndefined();
+      });
+  });
 });
