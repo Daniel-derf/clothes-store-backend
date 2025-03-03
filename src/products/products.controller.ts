@@ -15,12 +15,16 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 
 // use cases
-import FindAllProductsUseCase from './use-cases/findAllProducts.use-case';
+import FindAllProductsUseCase from './use-cases/FindAllProducts.use-case';
 
 // repositories
 import { InMemoryProductsRepository } from './repository/products.in-memory.repository';
 import IProductsRepository from './repository/products.interface.repository';
-import FindOneProductUseCase from './use-cases/findOneProduct.use-case';
+import FindOneProductUseCase from './use-cases/FindOneProduct.use-case';
+import DeleteProductByIdUseCase from './use-cases/DeleteProductById.use-case';
+
+// utils
+import httpErrorHandler from '../utils/http-error-handler';
 
 @Controller('products')
 export class ProductsController {
@@ -49,9 +53,11 @@ export class ProductsController {
   @Delete(':id')
   @HttpCode(204)
   async deleteById(@Param() { id }) {
-    const product = await this.repository.findById(+id);
-
-    if (product) await this.repository.delete(+id);
-    else throw new NotFoundException(`The product ${id} was not found`);
+    try {
+      const useCase = new DeleteProductByIdUseCase(this.repository);
+      await useCase.execute(+id);
+    } catch (error) {
+      httpErrorHandler(error);
+    }
   }
 }
