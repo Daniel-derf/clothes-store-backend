@@ -122,4 +122,22 @@ describe('AppController (e2e)', () => {
         expect(product.price).toEqual(85);
       });
   });
+
+  // Authentication
+  it('should get a JWT by doing login', async () => {
+    const authData = {
+      email: 'teste@email.com',
+      password: 'TesteSenhaForte@123987!',
+    };
+
+    await request(app.getHttpServer())
+      .post('/auth/login')
+      .send(authData)
+      .expect((res) => {
+        const { jwt } = res.body;
+
+        expect(jwt).toBeDefined();
+        expect(jwt.length).toBeGreaterThan(5);
+      });
+  });
 });
