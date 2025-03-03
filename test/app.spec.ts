@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 
-describe('AppController (e2e)', () => {
+describe('Tests by routes using in-memory test repository', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
