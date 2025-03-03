@@ -3,11 +3,56 @@ import IProductsRepository from './products.interface.repository';
 
 export class InMemoryProductsRepository implements IProductsRepository {
   private products: Product[] = [
-    new Product(1, 'Product 1', 100, 'M', 'Description 1', 1, { gg: 5 }),
-    new Product(2, 'Product 2', 200, 'F', 'Description 2', 2, { gg: 3 }),
-    new Product(3, 'Product 3', 300, 'M', 'Description 3', 3, { gg: 2 }),
-    new Product(4, 'Product 4', 400, 'F', 'Description 4', 4, { gg: 4 }),
-    new Product(5, 'Product 5', 500, 'M', 'Description 5', 5, { gg: 1 }),
+    new Product({
+      id: 1,
+      name: 'Product 1',
+      price: 100,
+      sex: 'M',
+      description: 'Description 1',
+      ratingId: 1,
+      availableSizeQtt: { gg: 5 },
+      appliedDiscountPercentage: 0,
+    }),
+    new Product({
+      id: 2,
+      name: 'Product 2',
+      price: 200,
+      sex: 'F',
+      description: 'Description 2',
+      ratingId: 2,
+      availableSizeQtt: { gg: 3 },
+      appliedDiscountPercentage: 0,
+    }),
+    new Product({
+      id: 3,
+      name: 'Product 3',
+      price: 300,
+      sex: 'M',
+      description: 'Description 3',
+      ratingId: 3,
+      availableSizeQtt: { gg: 2 },
+      appliedDiscountPercentage: 0,
+    }),
+    new Product({
+      id: 4,
+      name: 'Product 4',
+      price: 400,
+      sex: 'F',
+      description: 'Description 4',
+      ratingId: 4,
+      availableSizeQtt: { gg: 4 },
+      appliedDiscountPercentage: 0,
+    }),
+    new Product({
+      id: 5,
+      name: 'Product 5',
+      price: 500,
+      sex: 'M',
+      description: 'Description 5',
+      ratingId: 5,
+      availableSizeQtt: { gg: 1 },
+      appliedDiscountPercentage: 0,
+    }),
   ];
 
   async findAll(): Promise<Product[]> {
@@ -29,7 +74,7 @@ export class InMemoryProductsRepository implements IProductsRepository {
       const { name, price, sex, description, ratingId, availableSizeQtt } =
         product;
 
-      const newProduct = new Product(
+      const newProduct = new Product({
         id,
         name,
         price,
@@ -37,7 +82,7 @@ export class InMemoryProductsRepository implements IProductsRepository {
         description,
         ratingId,
         availableSizeQtt,
-      );
+      });
 
       this.products.push(newProduct);
     }

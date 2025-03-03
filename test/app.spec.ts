@@ -99,4 +99,26 @@ describe('AppController (e2e)', () => {
         );
       });
   });
+
+  it('should apply a discount to a product by its id', async () => {
+    await request(app.getHttpServer())
+      .get('/products/1')
+      .expect((res) => {
+        const product = res.body;
+
+        expect(product.price).toEqual(100);
+      });
+
+    await request(app.getHttpServer())
+      .patch('/products/1/apply-discount')
+      .send({ discount: 15 });
+
+    await request(app.getHttpServer())
+      .get('/products/1')
+      .expect((res) => {
+        const product = res.body;
+
+        expect(product.price).toEqual(85);
+      });
+  });
 });

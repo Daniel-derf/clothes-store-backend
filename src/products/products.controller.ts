@@ -26,6 +26,7 @@ import DeleteProductByIdUseCase from './use-cases/DeleteProductById.use-case';
 
 // utils
 import httpErrorHandler from '../utils/http-error-handler';
+import ApplyProductDiscountUseCase from './use-cases/ApplyProductDiscount.use-case';
 
 @Controller('products')
 export class ProductsController {
@@ -49,6 +50,13 @@ export class ProductsController {
     if (!output) throw new NotFoundException(`The product ${id} was not found`);
 
     return output;
+  }
+
+  @Patch(':id/apply-discount')
+  async applyDiscount(@Param() { id }, @Body() { discount }) {
+    const useCase = new ApplyProductDiscountUseCase(this.repository);
+
+    await useCase.execute(+id, discount);
   }
 
   @Post()

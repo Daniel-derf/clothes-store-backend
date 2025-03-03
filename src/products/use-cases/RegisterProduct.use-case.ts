@@ -10,15 +10,15 @@ export default class RegisterProductUseCase {
     const { name, price, sex, description, ratingId, availableSizeQtt } =
       registerProductDto;
 
-    const product = new Product(
-      -1,
+    const product = new Product({
+      id: -1,
       name,
       price,
       sex,
       description,
       ratingId,
       availableSizeQtt,
-    );
+    });
 
     await this.productsRepository.save(product);
 
