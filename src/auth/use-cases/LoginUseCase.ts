@@ -18,10 +18,14 @@ export default class LoginUseCase {
 
     if (!user) throw new Error(`User does not exist in the system`);
 
+    console.log({ user });
+
     const passwordMatches = await bcrypt.compare(password, user.password);
 
+    console.log({ passwordMatches });
+
     if (passwordMatches) {
-      const jwt = createAccessToken(user);
+      const jwt = createAccessToken({ ...user });
 
       return { jwt };
     }
