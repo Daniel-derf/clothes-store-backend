@@ -15,6 +15,7 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
+  // Products
   it('should get all products', () => {
     return request(app.getHttpServer())
       .get('/products')
