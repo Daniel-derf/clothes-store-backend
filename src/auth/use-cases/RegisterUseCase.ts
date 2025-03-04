@@ -1,5 +1,5 @@
 // repositories
-import IAuthRepository from '../repository/auth.interface.repository';
+import IUsersRepository from '../../users/repository/users.interface.repository';
 
 // types
 import RegisterDto from '../dto/register.dto';
@@ -8,12 +8,12 @@ import RegisterDto from '../dto/register.dto';
 import User from '../../users/entities/user.entity';
 
 export default class RegisterUseCase {
-  constructor(readonly authRepository: IAuthRepository) {}
+  constructor(readonly usersRepository: IUsersRepository) {}
 
   async execute(registerDto: RegisterDto) {
     const { email } = registerDto;
 
-    const userAlreadyExists = await this.authRepository.findByEmail(email);
+    const userAlreadyExists = await this.usersRepository.findByEmail(email);
 
     if (userAlreadyExists) {
       throw new Error(`The provided email is already registered`);
@@ -21,6 +21,6 @@ export default class RegisterUseCase {
 
     const newUser = new User({ ...registerDto, id: 0 });
 
-    await this.authRepository.save(newUser);
+    await this.usersRepository.save(newUser);
   }
 }
