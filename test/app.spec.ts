@@ -218,11 +218,79 @@ describe('Tests by routes using in-memory test repository', () => {
   });
 
   // Orders
-  it('should get all orders', async () => {});
+  it('should get all orders', async () => {
+    await request(app.getHttpServer())
+      .get('/orders')
+      .expect(200)
+      .expect((res) => {
+        const orders = res.body;
 
-  it('should get all user orders', async () => {});
+        expect(orders.length).toBeGreaterThan(0);
 
-  it('should get one specific user order', async () => {});
+        orders.forEach((order) => {
+          expect(order).toHaveProperty('id');
+          expect(order).toHaveProperty('userId');
+          expect(order).toHaveProperty('productsIds');
+          expect(order).toHaveProperty('totalPrice');
+          expect(order).toHaveProperty('status');
+        });
+      });
+  });
 
-  it('should make a new user order', async () => {});
+  it('should get all user orders', async () => {
+    await request(app.getHttpServer())
+      .get('/users/1/orders')
+      .expect(200)
+      .expect((res) => {
+        const orders = res.body;
+
+        expect(orders.length).toBeGreaterThan(0);
+
+        orders.forEach((order) => {
+          expect(order).toHaveProperty('id');
+          expect(order).toHaveProperty('userId', 1);
+          expect(order).toHaveProperty('productsIds');
+          expect(order).toHaveProperty('totalPrice');
+          expect(order).toHaveProperty('status');
+        });
+      });
+  });
+
+  it('should get one specific user order', async () => {
+    await request(app.getHttpServer())
+      .get('/users/1/orders/1')
+      .expect(200)
+      .expect((res) => {
+        const order = res.body;
+
+        expect(order).toHaveProperty('id', 1);
+        expect(order).toHaveProperty('userId', 1);
+        expect(order).toHaveProperty('productsIds');
+        expect(order).toHaveProperty('totalPrice');
+        expect(order).toHaveProperty('status');
+      });
+  });
+
+  it('should make a new user order', async () => {
+    const newOrder = {
+      userId: 1,
+      productIds: [1, 2],
+      totalPrice: 300,
+      status: 'pending',
+    };
+
+    await request(app.getHttpServer())
+      .post('/users/1/orders')
+      .send(newOrder)
+      .expect(201)
+      .expect((res) => {
+        const order = res.body;
+
+        expect(order).toHaveProperty('id');
+        expect(order).toHaveProperty('userId', newOrder.userId);
+        expect(order).toHaveProperty('productIds', newOrder.productIds);
+        expect(order).toHaveProperty('totalPrice', newOrder.totalPrice);
+        expect(order).toHaveProperty('status', newOrder.status);
+      });
+  });
 });
