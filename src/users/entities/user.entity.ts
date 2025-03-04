@@ -17,5 +17,8 @@ export default class User {
     this.name = props.name;
     this.email = props.email;
     this.password = props.password;
+    this.ordersIds = [];
+    this.ratingsIds = [];
+    this.addressesIds = [];
   }
 }
