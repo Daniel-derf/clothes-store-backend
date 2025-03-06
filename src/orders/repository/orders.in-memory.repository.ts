@@ -26,7 +26,16 @@ export default class OrdersInMemoryRepository implements IOrdersRepository {
   ];
 
   async save(order: any): Promise<void> {
-    this.orders.push(order);
+    const index = this.orders.findIndex((p) => p.id === order.id);
+    if (index !== -1) {
+      this.orders[index] = order;
+    } else {
+      const id = this.orders.length + 1;
+
+      order.id = id;
+
+      this.orders.push(order);
+    }
   }
 
   async findAllByUserId(userId: number): Promise<any> {

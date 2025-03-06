@@ -282,9 +282,14 @@ describe('Tests by routes using in-memory test repository', () => {
     await request(app.getHttpServer())
       .post('/users/1/orders')
       .send(newOrder)
-      .expect(201)
+      .expect(201);
+
+    await request(app.getHttpServer())
+      .get('/users/1/orders')
       .expect((res) => {
-        const order = res.body;
+        const orders = res.body;
+
+        const order = orders[orders.length - 1];
 
         expect(order).toHaveProperty('id');
         expect(order).toHaveProperty('userId', newOrder.userId);

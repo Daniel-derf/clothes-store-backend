@@ -1,14 +1,12 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import UsersInMemoryRepository from './repository/users.in-memory.repository';
 import FindAllUsersUseCase from './use-cases/FindAllUsersUseCase';
 import FindUserByIdUseCase from './use-cases/FindUserByIdUseCase';
 import OrdersInMemoryRepository from '../orders/repository/orders.in-memory.repository';
+import Order from '../orders/entities/order.entity';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
-
   usersRepository = new UsersInMemoryRepository();
   ordersRepository = new OrdersInMemoryRepository();
 
@@ -42,5 +40,12 @@ export class UsersController {
     const order = await this.ordersRepository.findOneByUserId(+id, +orderId);
 
     return order;
+  }
+
+  @Post(':id/orders')
+  async createUserOrder(@Param() { id }, @Body() createOrderDto) {
+    const order = new Order(createOrderDto);
+
+    await this.ordersRepository.save(order);
   }
 }
