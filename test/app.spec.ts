@@ -298,4 +298,26 @@ describe('Tests by routes using in-memory test repository', () => {
         expect(order).toHaveProperty('status', newOrder.status);
       });
   });
+
+  it('should update a order status', async () => {
+    // status: cancelled, transport, preparation, awaiting payment, awaiting pickup
+
+    const newStatus = 'AWAITING_PICKUP';
+
+    await request(app.getHttpServer())
+      .patch('/users/1/orders/1/update-status')
+      .send({ status: newStatus })
+      .expect(200);
+
+    await request(app.getHttpServer())
+      .get('/users/1/orders/1')
+      .expect(200)
+      .expect((res) => {
+        const order = res.body;
+
+        expect(order).toHaveProperty('id', 1);
+        expect(order).toHaveProperty('userId', 1);
+        expect(order).toHaveProperty('status', newStatus);
+      });
+  });
 });
