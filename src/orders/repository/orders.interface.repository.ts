@@ -3,5 +3,9 @@ export default interface IOrdersRepository {
 
   findAll(): Promise<any>;
 
+  findAllByUserId(userId: number): Promise<any>;
+
+  findOneByUserId(userId: number, orderId: number): Promise<any>;
+
   save(order: any): Promise<void>;
 }
