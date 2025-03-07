@@ -1,3 +1,4 @@
+import Order from '../entities/order.entity';
 import IOrdersRepository from './orders.interface.repository';
 
 export default class OrdersInMemoryRepository implements IOrdersRepository {
@@ -7,23 +8,27 @@ export default class OrdersInMemoryRepository implements IOrdersRepository {
       userId: 1,
       productsIds: [201, 202],
       totalPrice: 100.5,
-      status: 'pending',
+      status: 'CANCELLED',
     },
     {
       id: 2,
       userId: 1,
       productsIds: [203],
       totalPrice: 50.0,
-      status: 'completed',
+      status: 'TRANSPORT',
     },
     {
       id: 3,
       userId: 2,
       productsIds: [204, 205, 206],
       totalPrice: 150.75,
-      status: 'shipped',
+      status: 'PREPARATION',
     },
   ];
+
+  private toOrderEntity(order: any): Order {
+    return new Order(order);
+  }
 
   async save(order: any): Promise<void> {
     const index = this.orders.findIndex((p) => p.id === order.id);
@@ -38,25 +43,27 @@ export default class OrdersInMemoryRepository implements IOrdersRepository {
     }
   }
 
-  async findAllByUserId(userId: number): Promise<any> {
+  async findAllByUserId(userId: number): Promise<Order[]> {
     const orders = this.orders.filter((order) => order.userId === userId);
-
-    return orders;
+    return orders.map(this.toOrderEntity);
   }
 
-  async findOneByUserId(userId: number, orderId: number): Promise<any> {
-    console.log({ userId, orderId });
-
-    return this.orders.find(
+  async findOneByUserId(
+    userId: number,
+    orderId: number,
+  ): Promise<Order | undefined> {
+    const order = this.orders.find(
       (order) => order.userId === userId && order.id === orderId,
     );
+    return order ? this.toOrderEntity(order) : undefined;
   }
 
-  async findById(id: number): Promise<any> {
-    return this.orders.find((order) => order.id === id);
+  async findById(id: number): Promise<Order | undefined> {
+    const order = this.orders.find((order) => order.id === id);
+    return order ? this.toOrderEntity(order) : undefined;
   }
 
-  async findAll(): Promise<any[]> {
-    return this.orders;
+  async findAll(): Promise<Order[]> {
+    return this.orders.map(this.toOrderEntity);
   }
 }

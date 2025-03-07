@@ -1,11 +1,13 @@
+import Order from '../entities/order.entity';
+
 export default interface IOrdersRepository {
-  findById(id: number): Promise<any>;
+  findById(id: number): Promise<Order>;
 
-  findAll(): Promise<any>;
+  findAll(): Promise<Order[]>;
 
-  findAllByUserId(userId: number): Promise<any>;
+  findAllByUserId(userId: number): Promise<Order[]>;
 
-  findOneByUserId(userId: number, orderId: number): Promise<any>;
+  findOneByUserId(userId: number, orderId: number): Promise<Order>;
 
-  save(order: any): Promise<void>;
+  save(order: Order): Promise<void>;
 }

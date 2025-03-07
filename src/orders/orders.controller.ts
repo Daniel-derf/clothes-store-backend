@@ -9,7 +9,7 @@ export class OrdersController {
 
   @Get('')
   async findAll() {
-    const orders = this.ordersRepository.findAll();
+    const orders = await this.ordersRepository.findAll();
 
     return orders;
   }

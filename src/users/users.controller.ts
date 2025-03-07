@@ -48,8 +48,6 @@ export class UsersController {
     @Param() { userId, orderId },
     @Body() { status },
   ) {
-    console.log({ userId, orderId });
-
     const useCase = new UpdateOrderStatusUseCase(this.ordersRepository);
 
     await useCase.execute(+orderId, +userId, status);

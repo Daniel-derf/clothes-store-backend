@@ -274,9 +274,9 @@ describe('Tests by routes using in-memory test repository', () => {
   it('should make a new user order', async () => {
     const newOrder = {
       userId: 1,
-      productIds: [1, 2],
+      productsIds: [1, 2],
       totalPrice: 300,
-      status: 'pending',
+      status: 'PREPARATION',
     };
 
     await request(app.getHttpServer())
@@ -293,7 +293,7 @@ describe('Tests by routes using in-memory test repository', () => {
 
         expect(order).toHaveProperty('id');
         expect(order).toHaveProperty('userId', newOrder.userId);
-        expect(order).toHaveProperty('productIds', newOrder.productIds);
+        expect(order).toHaveProperty('productsIds', newOrder.productsIds);
         expect(order).toHaveProperty('totalPrice', newOrder.totalPrice);
         expect(order).toHaveProperty('status', newOrder.status);
       });
