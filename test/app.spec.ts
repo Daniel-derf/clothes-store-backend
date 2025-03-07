@@ -343,14 +343,14 @@ describe('Tests by routes using in-memory test repository', () => {
       };
 
       const loginResponse = await request(app.getHttpServer())
-        .post('/users/1/orders')
+        .post('/auth/login')
         .send(authData)
         .expect(200);
 
       const { jwt } = loginResponse.body;
 
       await request(app.getHttpServer())
-        .get('/protected-route')
+        .get('/users/1/orders')
         .set('Authorization', `Bearer ${jwt}`)
         .expect(200);
     });
@@ -362,16 +362,16 @@ describe('Tests by routes using in-memory test repository', () => {
       };
 
       const loginResponse = await request(app.getHttpServer())
-        .post('/users/1/orders')
+        .post('/auth/login')
         .send(authData)
         .expect(200);
 
       const { jwt } = loginResponse.body;
 
       await request(app.getHttpServer())
-        .get('/protected-route')
+        .get('/users/1/orders')
         .set('Authorization', `Bearer ${jwt}`)
-        .expect(200);
+        .expect(401);
     });
 
     it('should not allow access to protected route with invalid JWT', async () => {

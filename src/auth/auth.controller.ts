@@ -22,6 +22,7 @@ export class AuthController {
   private usersRepository: IUsersRepository = new UsersInMemoryRepository();
 
   @Post('/login')
+  @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: LoginDto) {
     const useCase = new LoginUseCase(this.usersRepository);
 
