@@ -45,6 +45,8 @@ export default class OrdersInMemoryRepository implements IOrdersRepository {
   }
 
   async findOneByUserId(userId: number, orderId: number): Promise<any> {
+    console.log({ userId, orderId });
+
     return this.orders.find(
       (order) => order.userId === userId && order.id === orderId,
     );

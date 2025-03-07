@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import UsersInMemoryRepository from './repository/users.in-memory.repository';
 import FindAllUsersUseCase from './use-cases/FindAllUsersUseCase';
 import FindUserByIdUseCase from './use-cases/FindUserByIdUseCase';
 import OrdersInMemoryRepository from '../orders/repository/orders.in-memory.repository';
 import Order from '../orders/entities/order.entity';
+import UpdateOrderStatusUseCase from './use-cases/UpdateOrderStatusUseCase';
 
 @Controller('users')
 export class UsersController {
@@ -40,6 +41,18 @@ export class UsersController {
     const order = await this.ordersRepository.findOneByUserId(+id, +orderId);
 
     return order;
+  }
+
+  @Patch(':userId/orders/:orderId/update-status')
+  async updateUserOrderStatus(
+    @Param() { userId, orderId },
+    @Body() { status },
+  ) {
+    console.log({ userId, orderId });
+
+    const useCase = new UpdateOrderStatusUseCase(this.ordersRepository);
+
+    await useCase.execute(+orderId, +userId, status);
   }
 
   @Post(':id/orders')
