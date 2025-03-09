@@ -4,6 +4,7 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
+  InternalServerErrorException,
   Post,
 } from '@nestjs/common';
 
@@ -26,7 +27,10 @@ export class AuthController {
   async login(@Body() loginDto: LoginDto) {
     const useCase = new LoginUseCase(this.usersRepository);
 
-    const res = await useCase.execute(loginDto);
+    const res = await useCase.execute(loginDto).catch((err) => {
+      if (err.message === 'Invalid credentials')
+        throw new BadRequestException('Invalid Credentials');
+    });
 
     return res;
   }
