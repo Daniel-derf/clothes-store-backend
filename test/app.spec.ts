@@ -7,7 +7,7 @@ describe('Tests by routes using in-memory test repository', () => {
   let app: INestApplication;
   let token: string;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -24,6 +24,15 @@ describe('Tests by routes using in-memory test repository', () => {
 
     const { jwt } = loginRes.body;
     token = jwt;
+  });
+
+  beforeEach(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = moduleFixture.createNestApplication();
+    await app.init();
   });
 
   describe('Products tests', () => {
