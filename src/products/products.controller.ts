@@ -8,6 +8,7 @@ import {
   Delete,
   NotFoundException,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 
 // dtos
@@ -27,6 +28,7 @@ import DeleteProductByIdUseCase from './use-cases/DeleteProductById.use-case';
 // utils
 import httpErrorHandler from '../utils/http-error-handler';
 import ApplyProductDiscountUseCase from './use-cases/ApplyProductDiscount.use-case';
+import { OnlyAdminGuard } from 'src/authorization/authorization.guard';
 
 @Controller('products')
 export class ProductsController {
@@ -52,6 +54,7 @@ export class ProductsController {
     return output;
   }
 
+  @UseGuards(OnlyAdminGuard)
   @Patch(':id/apply-discount')
   async applyDiscount(@Param() { id }, @Body() { discount }) {
     const useCase = new ApplyProductDiscountUseCase(this.repository);
@@ -59,6 +62,7 @@ export class ProductsController {
     await useCase.execute(+id, discount);
   }
 
+  @UseGuards(OnlyAdminGuard)
   @Post()
   async create(@Body() createProductDto: CreateProductDto) {
     const useCase = new RegisterProductUseCase(this.repository);
@@ -66,6 +70,7 @@ export class ProductsController {
     await useCase.execute(createProductDto);
   }
 
+  @UseGuards(OnlyAdminGuard)
   @Delete(':id')
   @HttpCode(204)
   async deleteById(@Param() { id }) {
