@@ -1,10 +1,19 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import UsersInMemoryRepository from './repository/users.in-memory.repository';
 import FindAllUsersUseCase from './use-cases/FindAllUsersUseCase';
 import FindUserByIdUseCase from './use-cases/FindUserByIdUseCase';
 import OrdersInMemoryRepository from '../orders/repository/orders.in-memory.repository';
 import Order from '../orders/entities/order.entity';
 import UpdateOrderStatusUseCase from './use-cases/UpdateOrderStatusUseCase';
+import { AuthorizationGuard } from '../authorization/authorization.guard';
 
 @Controller('users')
 export class UsersController {
@@ -29,6 +38,7 @@ export class UsersController {
     return user;
   }
 
+  @UseGuards(AuthorizationGuard)
   @Get(':id/orders')
   async findUserOrders(@Param() { id }) {
     const orders = await this.ordersRepository.findAllByUserId(+id);

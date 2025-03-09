@@ -1,3 +1,5 @@
+type Profile = 'admin' | 'client';
+
 export default class User {
   id: number;
   password: string;
@@ -6,12 +8,14 @@ export default class User {
   ordersIds: number[];
   ratingsIds: number[];
   addressesIds: number[];
+  profile: Profile;
 
   constructor(props: {
     id: number;
     name: string;
     password: string;
     email: string;
+    profile: Profile;
   }) {
     this.id = props.id;
     this.name = props.name;
@@ -20,5 +24,6 @@ export default class User {
     this.ordersIds = [];
     this.ratingsIds = [];
     this.addressesIds = [];
+    this.profile = props.profile;
   }
 }

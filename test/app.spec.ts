@@ -377,7 +377,7 @@ describe('Tests by routes using in-memory test repository', () => {
       await request(app.getHttpServer())
         .get('/users/1/orders')
         .set('Authorization', `Bearer ${jwt}`)
-        .expect(401);
+        .expect(403);
     });
   });
 });

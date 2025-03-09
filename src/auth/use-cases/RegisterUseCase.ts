@@ -19,7 +19,7 @@ export default class RegisterUseCase {
       throw new Error(`The provided email is already registered`);
     }
 
-    const newUser = new User({ ...registerDto, id: 0 });
+    const newUser = new User({ ...registerDto, profile: 'client', id: 0 });
 
     await this.usersRepository.save(newUser);
   }

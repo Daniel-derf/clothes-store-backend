@@ -8,6 +8,7 @@ export default class UsersInMemoryRepository implements IUsersRepository {
       email: 'teste@email.com',
       name: 'testUser',
       password: '$2b$10$20IJmuLaI1P.duklED9Whu6QmkO2vgy.70K7mxZzZkmNvAh38YjAq',
+      profile: 'client',
     }),
 
     new User({
@@ -15,6 +16,7 @@ export default class UsersInMemoryRepository implements IUsersRepository {
       email: 'teste2@email.com',
       name: 'testUser2',
       password: '$2b$10$20IJmuLaI1P.duklED9Whu6QmkO2vgy.70K7mxZzZkmNvAh38YjAq',
+      profile: 'client',
     }),
 
     new User({
@@ -22,6 +24,7 @@ export default class UsersInMemoryRepository implements IUsersRepository {
       email: 'teste3@email.com',
       name: 'testUser3',
       password: '$2b$10$20IJmuLaI1P.duklED9Whu6QmkO2vgy.70K7mxZzZkmNvAh38YjAq',
+      profile: 'client',
     }),
   ];
 
