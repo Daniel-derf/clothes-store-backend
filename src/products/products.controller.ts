@@ -28,7 +28,9 @@ import DeleteProductByIdUseCase from './use-cases/DeleteProductById.use-case';
 // utils
 import httpErrorHandler from '../utils/http-error-handler';
 import ApplyProductDiscountUseCase from './use-cases/ApplyProductDiscount.use-case';
-import { OnlyAdminGuard } from 'src/authorization/authorization.guard';
+
+// guards
+import { OnlyAdminGuard } from '../authorization/authorization.guard';
 
 @Controller('products')
 export class ProductsController {
