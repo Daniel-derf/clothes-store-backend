@@ -127,6 +127,25 @@ describe('Tests by routes using in-memory test repository', () => {
 
   // Authentication
   describe('Authentication tests', () => {
+    it('should allow access to protected route with valid JWT', async () => {
+      const authData = {
+        email: 'teste@email.com',
+        password: 'TesteSenhaForte@123987!',
+      };
+
+      const loginResponse = await request(app.getHttpServer())
+        .post('/auth/login')
+        .send(authData)
+        .expect(200);
+
+      const { jwt } = loginResponse.body;
+
+      await request(app.getHttpServer())
+        .get('/users/1/orders')
+        .set('Authorization', `Bearer ${jwt}`)
+        .expect(200);
+    });
+
     it('should get a JWT by doing login', async () => {
       const authData = {
         email: 'teste@email.com',
@@ -182,6 +201,17 @@ describe('Tests by routes using in-memory test repository', () => {
 
           expect(jwt).toBeUndefined();
         });
+    });
+
+    it('should not allow access to protected route without JWT', async () => {
+      await request(app.getHttpServer()).get('/users/1/orders').expect(401);
+    });
+
+    it('should not allow access to protected route with invalid JWT', async () => {
+      await request(app.getHttpServer())
+        .get('/users/1/orders')
+        .set('Authorization', 'Bearer invalid.jwt.token')
+        .expect(403);
     });
   });
 
@@ -330,31 +360,7 @@ describe('Tests by routes using in-memory test repository', () => {
   });
 
   // Authorization
-
   describe('Authorization tests', () => {
-    it('should not allow access to protected route without JWT', async () => {
-      await request(app.getHttpServer()).get('/users/1/orders').expect(401);
-    });
-
-    it('should allow access to protected route with valid JWT', async () => {
-      const authData = {
-        email: 'teste@email.com',
-        password: 'TesteSenhaForte@123987!',
-      };
-
-      const loginResponse = await request(app.getHttpServer())
-        .post('/auth/login')
-        .send(authData)
-        .expect(200);
-
-      const { jwt } = loginResponse.body;
-
-      await request(app.getHttpServer())
-        .get('/users/1/orders')
-        .set('Authorization', `Bearer ${jwt}`)
-        .expect(200);
-    });
-
     it('should not allow access to other user data with valid JWT', async () => {
       const authData = {
         email: 'teste2@email.com',
@@ -371,13 +377,6 @@ describe('Tests by routes using in-memory test repository', () => {
       await request(app.getHttpServer())
         .get('/users/1/orders')
         .set('Authorization', `Bearer ${jwt}`)
-        .expect(401);
-    });
-
-    it('should not allow access to protected route with invalid JWT', async () => {
-      await request(app.getHttpServer())
-        .get('/users/1/orders')
-        .set('Authorization', 'Bearer invalid.jwt.token')
         .expect(401);
     });
   });
