@@ -13,7 +13,6 @@ import {
 
 // dtos
 import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
 
 // use cases
 import FindAllProductsUseCase from './use-cases/FindAllProducts.use-case';

@@ -4,7 +4,6 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
-  InternalServerErrorException,
   Post,
 } from '@nestjs/common';
 

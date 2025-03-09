@@ -1,5 +1,4 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
-import { OrdersService } from './orders.service';
 import IOrdersRepository from './repository/orders.interface.repository';
 import OrdersInMemoryRepository from './repository/orders.in-memory.repository';
 
