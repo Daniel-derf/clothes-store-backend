@@ -26,3 +26,22 @@ export class AuthorizationGuard implements CanActivate {
     return true;
   }
 }
+
+@Injectable()
+export class OnlyAdminGuard implements CanActivate {
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
+    const request = context.switchToHttp().getRequest();
+
+    const user = request.user;
+
+    if (user.profile !== 'admin') {
+      throw new ForbiddenException(
+        'You are not authorized to access this route',
+      );
+    }
+
+    return true;
+  }
+}

@@ -26,7 +26,6 @@ describe('Tests by routes using in-memory test repository', () => {
     token = jwt;
   });
 
-  // Products
   describe('Products tests', () => {
     it('should get all products', () => {
       return request(app.getHttpServer())
@@ -155,7 +154,6 @@ describe('Tests by routes using in-memory test repository', () => {
     });
   });
 
-  // Authentication
   describe('Authentication tests', () => {
     it('should allow access to protected route with valid JWT', async () => {
       const authData = {
@@ -245,7 +243,6 @@ describe('Tests by routes using in-memory test repository', () => {
     });
   });
 
-  // Users
   describe('Users tests', () => {
     it('should get all users', async () => {
       await request(app.getHttpServer())
@@ -284,8 +281,6 @@ describe('Tests by routes using in-memory test repository', () => {
         });
     });
   });
-
-  // Orders
 
   describe('Orders tests', () => {
     it('should get all orders', async () => {
@@ -374,8 +369,6 @@ describe('Tests by routes using in-memory test repository', () => {
     });
 
     it('should update a order status', async () => {
-      // status: cancelled, transport, preparation, awaiting payment, awaiting pickup
-
       const newStatus = 'AWAITING_PICKUP';
 
       await request(app.getHttpServer())
@@ -398,7 +391,6 @@ describe('Tests by routes using in-memory test repository', () => {
     });
   });
 
-  // Authorization
   describe('Authorization tests', () => {
     it('should not allow access to other user data with valid JWT', async () => {
       const authData = {
@@ -415,6 +407,25 @@ describe('Tests by routes using in-memory test repository', () => {
 
       await request(app.getHttpServer())
         .get('/users/1/orders')
+        .set('Authorization', `Bearer ${jwt}`)
+        .expect(403);
+    });
+
+    it('should not allow a client to access a admin-only route', async () => {
+      const authData = {
+        email: 'teste2@email.com',
+        password: 'TesteSenhaForte@123987!',
+      };
+
+      const loginResponse = await request(app.getHttpServer())
+        .post('/auth/login')
+        .send(authData)
+        .expect(200);
+
+      const { jwt } = loginResponse.body;
+
+      await request(app.getHttpServer())
+        .get('/users')
         .set('Authorization', `Bearer ${jwt}`)
         .expect(403);
     });

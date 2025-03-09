@@ -13,13 +13,17 @@ import FindUserByIdUseCase from './use-cases/FindUserByIdUseCase';
 import OrdersInMemoryRepository from '../orders/repository/orders.in-memory.repository';
 import Order from '../orders/entities/order.entity';
 import UpdateOrderStatusUseCase from './use-cases/UpdateOrderStatusUseCase';
-import { AuthorizationGuard } from '../authorization/authorization.guard';
+import {
+  AuthorizationGuard,
+  OnlyAdminGuard,
+} from '../authorization/authorization.guard';
 
 @Controller('users')
 export class UsersController {
   usersRepository = new UsersInMemoryRepository();
   ordersRepository = new OrdersInMemoryRepository();
 
+  @UseGuards(OnlyAdminGuard)
   @Get('')
   async findAll() {
     const useCase = new FindAllUsersUseCase(this.usersRepository);
@@ -29,6 +33,7 @@ export class UsersController {
     return users;
   }
 
+  @UseGuards(AuthorizationGuard)
   @Get(':id')
   async findById(@Param() { id }) {
     const useCase = new FindUserByIdUseCase(this.usersRepository);
@@ -46,6 +51,7 @@ export class UsersController {
     return orders;
   }
 
+  @UseGuards(AuthorizationGuard)
   @Get(':id/orders/:orderId')
   async findUserOrder(@Param() { id, orderId }) {
     const order = await this.ordersRepository.findOneByUserId(+id, +orderId);
@@ -53,18 +59,17 @@ export class UsersController {
     return order;
   }
 
-  @Patch(':userId/orders/:orderId/update-status')
-  async updateUserOrderStatus(
-    @Param() { userId, orderId },
-    @Body() { status },
-  ) {
+  @UseGuards(AuthorizationGuard)
+  @Patch(':id/orders/:orderId/update-status')
+  async updateUserOrderStatus(@Param() { id, orderId }, @Body() { status }) {
     const useCase = new UpdateOrderStatusUseCase(this.ordersRepository);
 
-    await useCase.execute(+orderId, +userId, status);
+    await useCase.execute(+orderId, +id, status);
   }
 
+  @UseGuards(AuthorizationGuard)
   @Post(':id/orders')
-  async createUserOrder(@Param() { id }, @Body() createOrderDto) {
+  async createUserOrder(@Body() createOrderDto) {
     const order = new Order(createOrderDto);
 
     await this.ordersRepository.save(order);
