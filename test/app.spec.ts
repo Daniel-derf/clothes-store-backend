@@ -439,4 +439,107 @@ describe('Tests by routes using in-memory test repository', () => {
         .expect(403);
     });
   });
+
+  describe('Wishlist tests', () => {
+    it('should add a product to the wishlist', async () => {
+      await request(app.getHttpServer())
+        .post('/users/1/wishlist/add-products')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ productsIds: [1] })
+        .expect(201);
+    });
+
+    it('should get all products in the wishlist', async () => {
+      await request(app.getHttpServer())
+        .get('/users/1/wishlist/')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200)
+        .expect((res) => {
+          const products = res.body;
+          expect(Array.isArray(products)).toBe(true);
+
+          products.forEach((product: unknown) => {
+            expect(product).toHaveProperty('id');
+            expect(product).toHaveProperty('name');
+            expect(product).toHaveProperty('price');
+            expect(product).toHaveProperty('sex');
+            expect(product).toHaveProperty('description');
+            expect(product).toHaveProperty('ratingId');
+            expect(product).toHaveProperty('availableSizeQtt');
+          });
+        });
+    });
+
+    it('should remove a product from the wishlist', async () => {
+      await request(app.getHttpServer())
+        .delete('/users/1/wishlist/remove-products')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ productsIds: [1] })
+        .expect(204);
+    });
+
+    it('should return 404 if trying to remove a non-existent product from wishlist', async () => {
+      await request(app.getHttpServer())
+        .delete('/users/1/wishlist/remove-products')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ productsIds: [9999] }) // ID que não existe
+        .expect(404);
+    });
+  });
+
+  describe('Cart tests', () => {
+    it('should return 400 if trying to add a product with invalid quantity', async () => {
+      await request(app.getHttpServer())
+        .post('/users/1/cart/add-item')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ productId: 1, quantity: 0 }) // Quantidade inválida
+        .expect(400);
+    });
+
+    it('should add a product to the cart', async () => {
+      await request(app.getHttpServer())
+        .post('/users/1/cart/add-item')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ productId: 1, quantity: 2 })
+        .expect(201);
+    });
+
+    it('should get all products in the cart', async () => {
+      await request(app.getHttpServer())
+        .get('/users/1/cart')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200)
+        .expect((res) => {
+          const products = res.body;
+
+          expect(Array.isArray(products)).toBe(true);
+
+          products.forEach((product: unknown) => {
+            expect(product).toHaveProperty('id');
+            expect(product).toHaveProperty('name');
+            expect(product).toHaveProperty('price');
+            expect(product).toHaveProperty('sex');
+            expect(product).toHaveProperty('description');
+            expect(product).toHaveProperty('ratingId');
+            expect(product).toHaveProperty('availableSizeQtt');
+          });
+        });
+    });
+
+    it('should remove a product from the cart', async () => {
+      await request(app.getHttpServer())
+        .delete('/users/1/cart/remove-item')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ productId: 1, quantity: 2 })
+        .expect(204);
+    });
+
+    it('should return 404 if trying to remove a non-existent product from the cart', async () => {
+      await request(app.getHttpServer())
+        .delete('/users/1/cart/remove-item')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ productId: 9999, quantity: 1 }) // ID inexistente
+        .expect(404);
+    });
+  });
 });
