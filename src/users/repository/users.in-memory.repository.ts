@@ -26,6 +26,14 @@ export default class UsersInMemoryRepository implements IUsersRepository {
       password: '$2b$10$20IJmuLaI1P.duklED9Whu6QmkO2vgy.70K7mxZzZkmNvAh38YjAq',
       profile: 'client',
     }),
+
+    new User({
+      id: 4,
+      email: 'teste4@email.com',
+      name: 'testUser4',
+      password: '$2b$10$20IJmuLaI1P.duklED9Whu6QmkO2vgy.70K7mxZzZkmNvAh38YjAq',
+      profile: 'admin',
+    }),
   ];
 
   async findAll(): Promise<User[]> {

@@ -5,6 +5,7 @@ import { AppModule } from '../src/app.module';
 
 describe('Tests by routes using in-memory test repository', () => {
   let app: INestApplication;
+  let token: string;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -13,6 +14,16 @@ describe('Tests by routes using in-memory test repository', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+
+    const loginRes = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email: 'teste4@email.com',
+        password: 'TesteSenhaForte@123987!',
+      });
+
+    const { jwt } = loginRes.body;
+    token = jwt;
   });
 
   // Products
@@ -20,6 +31,7 @@ describe('Tests by routes using in-memory test repository', () => {
     it('should get all products', () => {
       return request(app.getHttpServer())
         .get('/products')
+        .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .expect((res) => {
           expect(Array.isArray(res.body));
@@ -40,6 +52,7 @@ describe('Tests by routes using in-memory test repository', () => {
     it('should get one product by ID', () => {
       return request(app.getHttpServer())
         .get('/products/1')
+        .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .expect((res) => {
           const product = res.body;
@@ -55,17 +68,29 @@ describe('Tests by routes using in-memory test repository', () => {
     });
 
     it('should get an error by trying to get a inexistent product by ID', () => {
-      return request(app.getHttpServer()).get('/products/90').expect(404);
+      return request(app.getHttpServer())
+        .get('/products/90')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(404);
     });
 
     it('should delete a product by id', async () => {
-      await request(app.getHttpServer()).delete('/products/1').expect(204);
+      await request(app.getHttpServer())
+        .delete('/products/1')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(204);
 
-      await request(app.getHttpServer()).get('/products/1').expect(404);
+      await request(app.getHttpServer())
+        .get('/products/1')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(404);
     });
 
     it('should get an error by trying to delete a inexistent product by ID', async () => {
-      await request(app.getHttpServer()).delete('/products/999').expect(404);
+      await request(app.getHttpServer())
+        .delete('/products/999')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(404);
     });
 
     it('should register a new product', async () => {
@@ -80,11 +105,13 @@ describe('Tests by routes using in-memory test repository', () => {
 
       await request(app.getHttpServer())
         .post('/products')
+        .set('Authorization', `Bearer ${token}`)
         .send(newProduct)
         .expect(201);
 
       await request(app.getHttpServer())
         .get('/products/6')
+        .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .expect((res) => {
           const product = res.body;
@@ -105,6 +132,7 @@ describe('Tests by routes using in-memory test repository', () => {
     it('should apply a discount to a product by its id', async () => {
       await request(app.getHttpServer())
         .get('/products/1')
+        .set('Authorization', `Bearer ${token}`)
         .expect((res) => {
           const product = res.body;
 
@@ -113,10 +141,12 @@ describe('Tests by routes using in-memory test repository', () => {
 
       await request(app.getHttpServer())
         .patch('/products/1/apply-discount')
+        .set('Authorization', `Bearer ${token}`)
         .send({ discount: 15 });
 
       await request(app.getHttpServer())
         .get('/products/1')
+        .set('Authorization', `Bearer ${token}`)
         .expect((res) => {
           const product = res.body;
 
@@ -220,6 +250,7 @@ describe('Tests by routes using in-memory test repository', () => {
     it('should get all users', async () => {
       await request(app.getHttpServer())
         .get('/users')
+        .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .expect((res) => {
           const users = res.body;
@@ -240,6 +271,7 @@ describe('Tests by routes using in-memory test repository', () => {
     it('should get one user by ID', async () => {
       await request(app.getHttpServer())
         .get('/users/1')
+        .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .expect((res) => {
           const user = res.body;
@@ -254,14 +286,15 @@ describe('Tests by routes using in-memory test repository', () => {
   });
 
   // Orders
+
   describe('Orders tests', () => {
     it('should get all orders', async () => {
       await request(app.getHttpServer())
         .get('/orders')
+        .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .expect((res) => {
           const orders = res.body;
-
           expect(orders.length).toBeGreaterThan(0);
 
           orders.forEach((order) => {
@@ -277,6 +310,7 @@ describe('Tests by routes using in-memory test repository', () => {
     it('should get all user orders', async () => {
       await request(app.getHttpServer())
         .get('/users/1/orders')
+        .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .expect((res) => {
           const orders = res.body;
@@ -296,6 +330,7 @@ describe('Tests by routes using in-memory test repository', () => {
     it('should get one specific user order', async () => {
       await request(app.getHttpServer())
         .get('/users/1/orders/1')
+        .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .expect((res) => {
           const order = res.body;
@@ -318,11 +353,13 @@ describe('Tests by routes using in-memory test repository', () => {
 
       await request(app.getHttpServer())
         .post('/users/1/orders')
+        .set('Authorization', `Bearer ${token}`)
         .send(newOrder)
         .expect(201);
 
       await request(app.getHttpServer())
         .get('/users/1/orders')
+        .set('Authorization', `Bearer ${token}`)
         .expect((res) => {
           const orders = res.body;
 
@@ -343,11 +380,13 @@ describe('Tests by routes using in-memory test repository', () => {
 
       await request(app.getHttpServer())
         .patch('/users/1/orders/1/update-status')
+        .set('Authorization', `Bearer ${token}`)
         .send({ status: newStatus })
         .expect(200);
 
       await request(app.getHttpServer())
         .get('/users/1/orders/1')
+        .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .expect((res) => {
           const order = res.body;
