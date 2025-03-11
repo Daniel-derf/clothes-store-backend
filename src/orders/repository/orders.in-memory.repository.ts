@@ -24,6 +24,13 @@ export default class OrdersInMemoryRepository implements IOrdersRepository {
       totalPrice: 150.75,
       status: 'PREPARATION',
     },
+    {
+      id: 4,
+      userId: 4,
+      productsIds: [204, 205, 206],
+      totalPrice: 150.75,
+      status: 'PREPARATION',
+    },
   ];
 
   private toOrderEntity(order: any): Order {

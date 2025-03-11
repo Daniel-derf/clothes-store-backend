@@ -12,7 +12,7 @@ import FindAllUsersUseCase from './use-cases/FindAllUsersUseCase';
 import FindUserByIdUseCase from './use-cases/FindUserByIdUseCase';
 import OrdersInMemoryRepository from '../orders/repository/orders.in-memory.repository';
 import Order from '../orders/entities/order.entity';
-import UpdateOrderStatusUseCase from './use-cases/UpdateOrderStatusUseCase';
+import UpdateOrderStatusUseCase from '../orders/use-cases/UpdateOrderStatusUseCase';
 import {
   AuthorizationGuard,
   OnlyAdminGuard,
@@ -21,7 +21,6 @@ import {
 @Controller('users')
 export class UsersController {
   usersRepository = new UsersInMemoryRepository();
-  ordersRepository = new OrdersInMemoryRepository();
 
   @UseGuards(OnlyAdminGuard)
   @Get('')
@@ -43,35 +42,35 @@ export class UsersController {
     return user;
   }
 
-  @UseGuards(AuthorizationGuard)
-  @Get(':id/orders')
-  async findUserOrders(@Param() { id }) {
-    const orders = await this.ordersRepository.findAllByUserId(+id);
+  // @UseGuards(AuthorizationGuard)
+  // @Get(':id/orders')
+  // async findUserOrders(@Param() { id }) {
+  //   const orders = await this.ordersRepository.findAllByUserId(+id);
 
-    return orders;
-  }
+  //   return orders;
+  // }
 
-  @UseGuards(AuthorizationGuard)
-  @Get(':id/orders/:orderId')
-  async findUserOrder(@Param() { id, orderId }) {
-    const order = await this.ordersRepository.findOneByUserId(+id, +orderId);
+  // @UseGuards(AuthorizationGuard)
+  // @Get(':id/orders/:orderId')
+  // async findUserOrder(@Param() { id, orderId }) {
+  //   const order = await this.ordersRepository.findOneByUserId(+id, +orderId);
 
-    return order;
-  }
+  //   return order;
+  // }
 
-  @UseGuards(AuthorizationGuard)
-  @Patch(':id/orders/:orderId/update-status')
-  async updateUserOrderStatus(@Param() { id, orderId }, @Body() { status }) {
-    const useCase = new UpdateOrderStatusUseCase(this.ordersRepository);
+  // @UseGuards(AuthorizationGuard)
+  // @Patch(':id/orders/:orderId/update-status')
+  // async updateUserOrderStatus(@Param() { id, orderId }, @Body() { status }) {
+  //   const useCase = new UpdateOrderStatusUseCase(this.ordersRepository);
 
-    await useCase.execute(+orderId, +id, status);
-  }
+  //   await useCase.execute(+orderId, +id, status);
+  // }
 
-  @UseGuards(AuthorizationGuard)
-  @Post(':id/orders')
-  async createUserOrder(@Body() createOrderDto) {
-    const order = new Order(createOrderDto);
+  // @UseGuards(AuthorizationGuard)
+  // @Post(':id/orders')
+  // async createUserOrder(@Body() createOrderDto) {
+  //   const order = new Order(createOrderDto);
 
-    await this.ordersRepository.save(order);
-  }
+  //   await this.ordersRepository.save(order);
+  // }
 }

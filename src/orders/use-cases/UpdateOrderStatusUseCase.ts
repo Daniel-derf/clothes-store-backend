@@ -4,8 +4,10 @@ import { Status } from 'src/orders/entities/order.entity';
 export default class UpdateOrderStatusUseCase {
   constructor(readonly ordersRepository: IOrdersRepository) {}
 
-  async execute(orderId: number, userId: number, newStatus: Status) {
-    const order = await this.ordersRepository.findOneByUserId(userId, orderId);
+  async execute(orderId: number, newStatus: Status) {
+    const order = await this.ordersRepository.findById(orderId);
+
+    if (!order) throw new Error('Order not found');
 
     order.updateStatus(newStatus);
 
