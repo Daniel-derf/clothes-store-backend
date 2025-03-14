@@ -387,14 +387,6 @@ describe('Tests by routes using in-memory test repository', () => {
   });
 
   describe('Wishlist tests', () => {
-    it('should add a product to the wishlist', async () => {
-      await request(app.getHttpServer())
-        .post('/wishlist/add-products')
-        .set('Authorization', `Bearer ${token}`)
-        .send({ productsIds: [1] })
-        .expect(201);
-    });
-
     it('should get all products in the wishlist', async () => {
       await request(app.getHttpServer())
         .get('/wishlist/products')
@@ -413,6 +405,34 @@ describe('Tests by routes using in-memory test repository', () => {
             expect(product).toHaveProperty('ratingId');
             expect(product).toHaveProperty('availableSizeQtt');
           });
+        });
+    });
+
+    it('should add a product to the wishlist', async () => {
+      const PRODUCT_ID = 3;
+
+      await request(app.getHttpServer())
+        .post('/wishlist/add-products')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ productsIds: [PRODUCT_ID] })
+        .expect(201);
+
+      await request(app.getHttpServer())
+        .get('/wishlist/products')
+        .set('Authorization', `Bearer ${token}`)
+        .expect((res) => {
+          const products = res.body;
+          expect(Array.isArray(products)).toBe(true);
+
+          const product = products.find((product) => product.id === PRODUCT_ID);
+
+          expect(product).toHaveProperty('id');
+          expect(product).toHaveProperty('name');
+          expect(product).toHaveProperty('price');
+          expect(product).toHaveProperty('sex');
+          expect(product).toHaveProperty('description');
+          expect(product).toHaveProperty('ratingId');
+          expect(product).toHaveProperty('availableSizeQtt');
         });
     });
 
