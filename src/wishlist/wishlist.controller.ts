@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Post,
   Req,
 } from '@nestjs/common';
@@ -12,6 +13,7 @@ import IWishlistRepository from './repository/wishlist.interface.repository';
 import WishlistInMemoryRepository from './repository/wishlist.in-memory.repository';
 import IProductsRepository from '../products/repository/products.interface.repository';
 import { InMemoryProductsRepository } from '../products/repository/products.in-memory.repository';
+import DeleteWishlistProductUseCase from './use-cases/DeleteWishlistProduct.use-case';
 
 @Controller('wishlist')
 export class WishlistController {
@@ -56,9 +58,11 @@ export class WishlistController {
     const userId = req.user.id;
     const productsIds = req.body?.productsIds;
 
-    const wishlist = await this.wishlistRepository.findByUserId(userId);
-    wishlist.removeProducts(productsIds);
+    const useCase = new DeleteWishlistProductUseCase(this.wishlistRepository);
 
-    await this.wishlistRepository.save(wishlist);
+    await useCase.execute({ userId, productsIds }).catch((err) => {
+      if (err.message.includes('not found'))
+        throw new NotFoundException(err.message);
+    });
   }
 }
