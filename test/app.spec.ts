@@ -386,10 +386,10 @@ describe('Tests by routes using in-memory test repository', () => {
     });
   });
 
-  describe.skip('Wishlist tests', () => {
+  describe('Wishlist tests', () => {
     it('should add a product to the wishlist', async () => {
       await request(app.getHttpServer())
-        .post('/users/1/wishlist/add-products')
+        .post('/wishlist/add-products')
         .set('Authorization', `Bearer ${token}`)
         .send({ productsIds: [1] })
         .expect(201);
@@ -397,7 +397,7 @@ describe('Tests by routes using in-memory test repository', () => {
 
     it('should get all products in the wishlist', async () => {
       await request(app.getHttpServer())
-        .get('/users/1/wishlist/')
+        .get('/wishlist/products')
         .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .expect((res) => {
@@ -418,7 +418,7 @@ describe('Tests by routes using in-memory test repository', () => {
 
     it('should remove a product from the wishlist', async () => {
       await request(app.getHttpServer())
-        .delete('/users/1/wishlist/remove-products')
+        .delete('/wishlist/remove-products')
         .set('Authorization', `Bearer ${token}`)
         .send({ productsIds: [1] })
         .expect(204);
@@ -426,7 +426,7 @@ describe('Tests by routes using in-memory test repository', () => {
 
     it('should return 404 if trying to remove a non-existent product from wishlist', async () => {
       await request(app.getHttpServer())
-        .delete('/users/1/wishlist/remove-products')
+        .delete('/wishlist/remove-products')
         .set('Authorization', `Bearer ${token}`)
         .send({ productsIds: [9999] }) // ID que não existe
         .expect(404);
