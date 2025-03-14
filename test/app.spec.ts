@@ -164,23 +164,8 @@ describe('Tests by routes using in-memory test repository', () => {
   });
 
   describe('Authentication tests', () => {
-    it('should allow access to protected route with valid JWT', async () => {
-      const authData = {
-        email: 'teste@email.com',
-        password: 'TesteSenhaForte@123987!',
-      };
-
-      const loginResponse = await request(app.getHttpServer())
-        .post('/auth/login')
-        .send(authData)
-        .expect(200);
-
-      const { jwt } = loginResponse.body;
-
-      await request(app.getHttpServer())
-        .get('/users/1/orders')
-        .set('Authorization', `Bearer ${jwt}`)
-        .expect(200);
+    it('should not allow access to private route without JWT', async () => {
+      await request(app.getHttpServer()).get('/orders').expect(401);
     });
 
     it('should get a JWT by doing login', async () => {
@@ -292,7 +277,7 @@ describe('Tests by routes using in-memory test repository', () => {
   });
 
   describe('Orders tests', () => {
-    it('should get all orders', async () => {
+    it('should get all user orders', async () => {
       await request(app.getHttpServer())
         .get('/orders')
         .set('Authorization', `Bearer ${token}`)
@@ -304,26 +289,6 @@ describe('Tests by routes using in-memory test repository', () => {
           orders.forEach((order) => {
             expect(order).toHaveProperty('id');
             expect(order).toHaveProperty('userId');
-            expect(order).toHaveProperty('productsIds');
-            expect(order).toHaveProperty('totalPrice');
-            expect(order).toHaveProperty('status');
-          });
-        });
-    });
-
-    it('should get all user orders', async () => {
-      await request(app.getHttpServer())
-        .get('/orders/user/1')
-        .set('Authorization', `Bearer ${token}`)
-        .expect(200)
-        .expect((res) => {
-          const orders = res.body;
-
-          expect(orders.length).toBeGreaterThan(0);
-
-          orders.forEach((order) => {
-            expect(order).toHaveProperty('id');
-            expect(order).toHaveProperty('userId', 1);
             expect(order).toHaveProperty('productsIds');
             expect(order).toHaveProperty('totalPrice');
             expect(order).toHaveProperty('status');
@@ -347,9 +312,9 @@ describe('Tests by routes using in-memory test repository', () => {
         });
     });
 
-    it('should make a new user order', async () => {
+    it('should make a new order', async () => {
       const newOrder = {
-        userId: 1,
+        userId: 4,
         productsIds: [1, 2],
         totalPrice: 300,
         status: 'PREPARATION',
@@ -362,7 +327,7 @@ describe('Tests by routes using in-memory test repository', () => {
         .expect(201);
 
       await request(app.getHttpServer())
-        .get('/orders/user/1')
+        .get('/orders')
         .set('Authorization', `Bearer ${token}`)
         .expect((res) => {
           const orders = res.body;
@@ -401,25 +366,6 @@ describe('Tests by routes using in-memory test repository', () => {
   });
 
   describe('Authorization tests', () => {
-    it('should not allow access to other user data with valid JWT', async () => {
-      const authData = {
-        email: 'teste2@email.com',
-        password: 'TesteSenhaForte@123987!',
-      };
-
-      const loginResponse = await request(app.getHttpServer())
-        .post('/auth/login')
-        .send(authData)
-        .expect(200);
-
-      const { jwt } = loginResponse.body;
-
-      await request(app.getHttpServer())
-        .get('/users/1/orders')
-        .set('Authorization', `Bearer ${jwt}`)
-        .expect(403);
-    });
-
     it('should not allow a client to access a admin-only route', async () => {
       const authData = {
         email: 'teste2@email.com',

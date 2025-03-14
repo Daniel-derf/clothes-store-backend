@@ -18,23 +18,17 @@ import {
 } from '../authorization/authorization.guard';
 import UpdateOrderStatusUseCase from './use-cases/UpdateOrderStatusUseCase';
 import Order from './entities/order.entity';
+import CreateOrderUseCase from './use-cases/CreateOrderUseCase';
 
 @Controller('orders')
 export class OrdersController {
   private ordersRepository: IOrdersRepository = new OrdersInMemoryRepository();
 
-  @UseGuards(OnlyAdminGuard)
   @Get('')
-  async findAll() {
-    const orders = await this.ordersRepository.findAll();
+  async findAll(@Req() req) {
+    const userId = req.user.id;
 
-    return orders;
-  }
-
-  @UseGuards(AuthorizationGuard)
-  @Get('user/:userId')
-  async findUserOrders(@Param() { userId }) {
-    const orders = await this.ordersRepository.findAllByUserId(+userId);
+    const orders = await this.ordersRepository.findAllByUserId(userId);
 
     return orders;
   }
@@ -57,9 +51,9 @@ export class OrdersController {
 
   @UseGuards(AuthorizationGuard)
   @Post('create-order')
-  async createOrder(@Body() createOrderDto) {
-    const order = new Order(createOrderDto);
+  async createOrder(@Body() createOrderDto, @Req() req) {
+    const useCase = new CreateOrderUseCase(this.ordersRepository);
 
-    await this.ordersRepository.save(order);
+    await useCase.execute(createOrderDto, +req.user.id);
   }
 }
