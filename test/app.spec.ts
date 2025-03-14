@@ -412,6 +412,18 @@ describe('Tests by routes using in-memory test repository', () => {
       const PRODUCT_ID = 3;
 
       await request(app.getHttpServer())
+        .get('/wishlist/products')
+        .set('Authorization', `Bearer ${token}`)
+        .expect((res) => {
+          const products: any[] = res.body;
+          expect(Array.isArray(products)).toBe(true);
+
+          const product = products.find((product) => product.id === PRODUCT_ID);
+
+          expect(product).toBeUndefined();
+        });
+
+      await request(app.getHttpServer())
         .post('/wishlist/add-products')
         .set('Authorization', `Bearer ${token}`)
         .send({ productsIds: [PRODUCT_ID] })

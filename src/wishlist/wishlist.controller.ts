@@ -15,9 +15,14 @@ export class WishlistController {
     new InMemoryProductsRepository();
 
   @Post('add-products')
-  addProductToWishlist(@Req() req) {
+  async addProductToWishlist(@Req() req) {
     const userId = req.user.id;
     const productsIds = req.body?.productsIds;
+
+    const wishlist = await this.wishlistRepository.findByUserId(userId);
+    wishlist.addProducts(productsIds);
+
+    await this.wishlistRepository.save(wishlist);
   }
 
   @Get('products')

@@ -8,10 +8,15 @@ export default class WishlistInMemoryRepository implements IWishlistRepository {
 
   async findByUserId(userId: number): Promise<Wishlist> {
     const wishlist = this.wishlists.find((w) => w.userId === userId);
-
     return wishlist;
   }
-  async save(wishlist: any): Promise<void> {
-    throw new Error('Method not implemented.');
+
+  async save(wishlist: Wishlist): Promise<void> {
+    const index = this.wishlists.findIndex((w) => w.id === wishlist.id);
+    if (index !== -1) {
+      this.wishlists[index] = wishlist;
+    } else {
+      this.wishlists.push(wishlist);
+    }
   }
 }
