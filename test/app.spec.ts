@@ -449,11 +449,37 @@ describe('Tests by routes using in-memory test repository', () => {
     });
 
     it('should remove a product from the wishlist', async () => {
+      const PRODUCT_ID = 1;
+
+      await request(app.getHttpServer())
+        .get('/wishlist/products')
+        .set('Authorization', `Bearer ${token}`)
+        .expect((res) => {
+          const products: any[] = res.body;
+          expect(Array.isArray(products)).toBe(true);
+
+          const product = products.find((product) => product.id === PRODUCT_ID);
+
+          expect(product).toBeDefined();
+        });
+
       await request(app.getHttpServer())
         .delete('/wishlist/remove-products')
         .set('Authorization', `Bearer ${token}`)
-        .send({ productsIds: [1] })
+        .send({ productsIds: [PRODUCT_ID] })
         .expect(204);
+
+      await request(app.getHttpServer())
+        .get('/wishlist/products')
+        .set('Authorization', `Bearer ${token}`)
+        .expect((res) => {
+          const products: any[] = res.body;
+          expect(Array.isArray(products)).toBe(true);
+
+          const product = products.find((product) => product.id === PRODUCT_ID);
+
+          expect(product).toBeUndefined();
+        });
     });
 
     it('should return 404 if trying to remove a non-existent product from wishlist', async () => {

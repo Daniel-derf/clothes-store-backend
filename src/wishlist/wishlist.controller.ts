@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Req } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+} from '@nestjs/common';
 import { WishlistService } from './wishlist.service';
 import IWishlistRepository from './repository/wishlist.interface.repository';
 import WishlistInMemoryRepository from './repository/wishlist.in-memory.repository';
@@ -40,5 +48,17 @@ export class WishlistController {
     );
 
     return products;
+  }
+
+  @Delete('remove-products')
+  @HttpCode(204)
+  async removeProductFromWishlist(@Req() req) {
+    const userId = req.user.id;
+    const productsIds = req.body?.productsIds;
+
+    const wishlist = await this.wishlistRepository.findByUserId(userId);
+    wishlist.removeProducts(productsIds);
+
+    await this.wishlistRepository.save(wishlist);
   }
 }

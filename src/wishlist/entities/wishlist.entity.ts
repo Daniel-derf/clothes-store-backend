@@ -16,4 +16,23 @@ export default class Wishlist {
       if (productIsNotAdded) this.productsIds.push(id);
     });
   }
+
+  removeProducts(productsIds: number[]) {
+    const notFoundProducts = productsIds.filter((id) => {
+      if (this.productsIds.indexOf(id) === -1) return true;
+      return false;
+    });
+
+    if (notFoundProducts.length)
+      throw new Error(
+        `The following IDs were not found: ${notFoundProducts.join(', ')}`,
+      );
+
+    const newProductsIds = this.productsIds.filter((id) => {
+      if (productsIds.indexOf(id) !== -1) return false;
+      return true;
+    });
+
+    this.productsIds = newProductsIds;
+  }
 }
