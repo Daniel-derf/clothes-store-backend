@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 
-describe('Tests by routes using in-memory test repository', () => {
+describe('HTTP Integration Tests', () => {
   let app: INestApplication;
   let token: string;
 
