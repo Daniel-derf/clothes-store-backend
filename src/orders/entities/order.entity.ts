@@ -23,7 +23,7 @@ export default class Order {
     this.id = dto.id;
     this.userId = dto.userId;
     this.productsIds = dto.productsIds ?? [];
-    this.totalPrice = dto.totalPrice ?? 0;
+    this.totalPrice = Number(dto.totalPrice) ?? 0;
 
     if (this._isNotAValidStatus(dto.status)) {
       throw new Error(`Invalid status: ${dto.status}`);
