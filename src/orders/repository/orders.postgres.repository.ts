@@ -5,8 +5,6 @@ import * as pgPromise from 'pg-promise';
 
 const PSQL_URL = process.env.PSQL_URL;
 
-console.log({ PSQL_URL });
-
 const pgp = pgPromise();
 
 export default class OrdersPostgresRepository implements IOrdersRepository {
@@ -40,9 +38,6 @@ export default class OrdersPostgresRepository implements IOrdersRepository {
       [userId],
     );
 
-    console.log(ordersData[0]);
-    console.log(ordersData[0].productsIds);
-
     await connection.$pool.end();
 
     return ordersData.map(
@@ -67,12 +62,6 @@ export default class OrdersPostgresRepository implements IOrdersRepository {
 
   async save(order: Order): Promise<void> {
     const connection = pgp(PSQL_URL);
-    console.log([
-      order.userId,
-      order.productsIds,
-      order.totalPrice,
-      order.status,
-    ]);
 
     if (order.id === 0) {
       await connection.query(
