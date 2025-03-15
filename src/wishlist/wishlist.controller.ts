@@ -12,17 +12,19 @@ import { WishlistService } from './wishlist.service';
 import IWishlistRepository from './repository/wishlist.interface.repository';
 import WishlistInMemoryRepository from './repository/wishlist.in-memory.repository';
 import IProductsRepository from '../products/repository/products.interface.repository';
-import { InMemoryProductsRepository } from '../products/repository/products.in-memory.repository';
+import { ProductsInMemoryRepository } from '../products/repository/products.in-memory.repository';
 import DeleteWishlistProductUseCase from './use-cases/DeleteWishlistProduct.use-case';
+import WishlistPostgresRepository from './repository/wishlist.postgres.repository';
+import ProductsPostgresRepository from '../products/repository/products.postgres.repository';
 
 @Controller('wishlist')
 export class WishlistController {
   constructor() {}
 
   private wishlistRepository: IWishlistRepository =
-    new WishlistInMemoryRepository();
+    new WishlistPostgresRepository();
   private productsRepository: IProductsRepository =
-    new InMemoryProductsRepository();
+    new ProductsPostgresRepository();
 
   @Post('add-products')
   async addProductToWishlist(@Req() req) {

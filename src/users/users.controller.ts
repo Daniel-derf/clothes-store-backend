@@ -17,10 +17,11 @@ import {
   AuthorizationGuard,
   OnlyAdminGuard,
 } from '../authorization/authorization.guard';
+import UsersPostgresRepository from './repository/users.postgres.repository';
 
 @Controller('users')
 export class UsersController {
-  usersRepository = new UsersInMemoryRepository();
+  usersRepository = new UsersPostgresRepository();
 
   @UseGuards(OnlyAdminGuard)
   @Get('')

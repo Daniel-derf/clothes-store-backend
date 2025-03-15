@@ -16,10 +16,11 @@ import UsersInMemoryRepository from '../users/repository/users.in-memory.reposit
 
 import LoginUseCase from './use-cases/LoginUseCase';
 import RegisterUseCase from './use-cases/RegisterUseCase';
+import UsersPostgresRepository from '../users/repository/users.postgres.repository';
 
 @Controller('auth')
 export class AuthController {
-  private usersRepository: IUsersRepository = new UsersInMemoryRepository();
+  private usersRepository: IUsersRepository = new UsersPostgresRepository();
 
   @Post('/login')
   @HttpCode(HttpStatus.OK)

@@ -1,7 +1,7 @@
 import { Product } from '../entities/product.entity';
 import IProductsRepository from './products.interface.repository';
 
-export class InMemoryProductsRepository implements IProductsRepository {
+export class ProductsInMemoryRepository implements IProductsRepository {
   private products: Product[] = [
     new Product({
       id: 1,

@@ -19,7 +19,7 @@ import FindAllProductsUseCase from './use-cases/FindAllProducts.use-case';
 import RegisterProductUseCase from './use-cases/RegisterProduct.use-case';
 
 // repositories
-import { InMemoryProductsRepository } from './repository/products.in-memory.repository';
+import { ProductsInMemoryRepository } from './repository/products.in-memory.repository';
 import IProductsRepository from './repository/products.interface.repository';
 import FindOneProductUseCase from './use-cases/FindOneProduct.use-case';
 import DeleteProductByIdUseCase from './use-cases/DeleteProductById.use-case';
@@ -30,10 +30,11 @@ import ApplyProductDiscountUseCase from './use-cases/ApplyProductDiscount.use-ca
 
 // guards
 import { OnlyAdminGuard } from '../authorization/authorization.guard';
+import ProductsPostgresRepository from './repository/products.postgres.repository';
 
 @Controller('products')
 export class ProductsController {
-  private repository: IProductsRepository = new InMemoryProductsRepository();
+  private repository: IProductsRepository = new ProductsPostgresRepository();
 
   @Get()
   async findAll() {
