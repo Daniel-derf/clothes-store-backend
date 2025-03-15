@@ -17,7 +17,14 @@ import { WishlistModule } from './wishlist/wishlist.module';
 import { CartModule } from './cart/cart.module';
 
 @Module({
-  imports: [ProductsModule, UsersModule, AuthModule, OrdersModule, WishlistModule, CartModule],
+  imports: [
+    ProductsModule,
+    UsersModule,
+    AuthModule,
+    OrdersModule,
+    WishlistModule,
+    CartModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

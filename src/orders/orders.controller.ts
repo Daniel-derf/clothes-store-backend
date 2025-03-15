@@ -17,16 +17,17 @@ import {
   OnlyAdminGuard,
 } from '../authorization/authorization.guard';
 import UpdateOrderStatusUseCase from './use-cases/UpdateOrderStatusUseCase';
-import Order from './entities/order.entity';
 import CreateOrderUseCase from './use-cases/CreateOrderUseCase';
+import OrdersPostgresRepository from './repository/orders.postgres.repository';
 
 @Controller('orders')
 export class OrdersController {
-  private ordersRepository: IOrdersRepository = new OrdersInMemoryRepository();
+  private ordersRepository: IOrdersRepository = new OrdersPostgresRepository();
 
   @Get('')
   async findAll(@Req() req) {
-    const userId = req.user.id;
+    // const userId = req.user.id;
+    const userId = 1;
 
     const orders = await this.ordersRepository.findAllByUserId(userId);
 
@@ -49,11 +50,11 @@ export class OrdersController {
     await useCase.execute(+orderId, status);
   }
 
-  @UseGuards(AuthorizationGuard)
   @Post('create-order')
   async createOrder(@Body() createOrderDto, @Req() req) {
     const useCase = new CreateOrderUseCase(this.ordersRepository);
 
-    await useCase.execute(createOrderDto, +req.user.id);
+    // await useCase.execute(createOrderDto, +req.user.id);
+    await useCase.execute(createOrderDto, 1);
   }
 }
