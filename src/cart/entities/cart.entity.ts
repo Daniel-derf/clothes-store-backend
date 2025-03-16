@@ -10,7 +10,7 @@ export default class Cart {
   }
 
   addProduct({ productId, productSize, productQuantity }: Input) {
-    if (productQuantity <= 0) {
+    if (productQuantity <= 0 || !productQuantity) {
       throw new Error('Invalid product quantity');
     }
 

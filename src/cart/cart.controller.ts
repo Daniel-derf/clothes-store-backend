@@ -1,6 +1,17 @@
-import { Body, Controller, Get, Inject, Post, Req } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Inject,
+  InternalServerErrorException,
+  NotFoundException,
+  Post,
+  Req,
+} from '@nestjs/common';
 import AddCartItemUseCase from './use-cases/AddCartItemUseCase';
 import GetCartProductsUseCase from './use-cases/GetCartProductsUseCase';
+import { NotFoundError } from 'rxjs';
 
 @Controller('cart')
 export class CartController {
@@ -26,7 +37,17 @@ export class CartController {
       productQuantity,
     };
 
-    await useCase.execute(input);
+    await useCase.execute(input).catch((err) => {
+      const errorMsg: string = err.message;
+
+      if (errorMsg.includes('Invalid product quantity')) {
+        throw new BadRequestException(errorMsg);
+      }
+      if (errorMsg.includes('product was not found'))
+        throw new NotFoundException(errorMsg);
+
+      throw new InternalServerErrorException(errorMsg);
+    });
   }
 
   @Get('products')

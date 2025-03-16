@@ -511,7 +511,7 @@ describe('HTTP Integration Tests', () => {
       await request(app.getHttpServer())
         .post('/cart/add-item')
         .set('Authorization', `Bearer ${token}`)
-        .send({ productId: 1, quantity: 0 }) // Quantidade inválida
+        .send({ productId: 1, productQuantity: 0 }) // Quantidade inválida
         .expect(400);
     });
 
