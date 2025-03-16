@@ -15,6 +15,9 @@ import { OrdersModule } from './orders/orders.module';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { WishlistModule } from './wishlist/wishlist.module';
 import { CartModule } from './cart/cart.module';
+import UsersPostgresRepository from './users/repository/users.postgres.repository';
+import UsersInMemoryRepository from './users/repository/users.in-memory.repository';
+import { ProvidersModule } from './infra/providers/providers.module';
 
 @Module({
   imports: [
@@ -24,9 +27,18 @@ import { CartModule } from './cart/cart.module';
     OrdersModule,
     WishlistModule,
     CartModule,
+    ProvidersModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    UsersInMemoryRepository,
+    UsersPostgresRepository,
+    {
+      provide: 'IUsersRepository',
+      useExisting: UsersPostgresRepository,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

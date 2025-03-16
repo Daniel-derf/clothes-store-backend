@@ -47,11 +47,11 @@ describe('HTTP Integration Tests', () => {
     const IS_USING_DATABASE = true;
 
     if (IS_USING_DATABASE) {
-      const sql = fs
+      const RESET_DB_COMMAND = fs
         .readFileSync(path.resolve(__dirname, '../init.sql'))
         .toString();
 
-      await connection.none(sql);
+      await connection.none(RESET_DB_COMMAND);
     }
   });
 

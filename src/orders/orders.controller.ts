@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Inject,
   Param,
   Patch,
   Post,
@@ -24,7 +25,7 @@ import CreateOrderUseCase from './use-cases/CreateOrderUseCase';
 
 @Controller('orders')
 export class OrdersController {
-  private ordersRepository: IOrdersRepository = new OrdersPostgresRepository();
+  constructor(@Inject('IOrdersRepository') readonly ordersRepository) {}
 
   @Get('')
   async findAll(@Req() req) {

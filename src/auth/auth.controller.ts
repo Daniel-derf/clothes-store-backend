@@ -4,6 +4,7 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
+  Inject,
   Post,
 } from '@nestjs/common';
 
@@ -20,7 +21,7 @@ import UsersPostgresRepository from '../users/repository/users.postgres.reposito
 
 @Controller('auth')
 export class AuthController {
-  private usersRepository: IUsersRepository = new UsersPostgresRepository();
+  constructor(@Inject('IUsersRepository') readonly usersRepository) {}
 
   @Post('/login')
   @HttpCode(HttpStatus.OK)

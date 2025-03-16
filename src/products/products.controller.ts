@@ -9,6 +9,7 @@ import {
   NotFoundException,
   HttpCode,
   UseGuards,
+  Inject,
 } from '@nestjs/common';
 
 // dtos
@@ -34,11 +35,11 @@ import ProductsPostgresRepository from './repository/products.postgres.repositor
 
 @Controller('products')
 export class ProductsController {
-  private repository: IProductsRepository = new ProductsPostgresRepository();
+  constructor(@Inject('IProductsRepository') readonly productsRepository) {}
 
   @Get()
   async findAll() {
-    const useCase = new FindAllProductsUseCase(this.repository);
+    const useCase = new FindAllProductsUseCase(this.productsRepository);
 
     const output = await useCase.execute();
 
@@ -47,7 +48,7 @@ export class ProductsController {
 
   @Get(':id')
   async findOne(@Param() { id }) {
-    const useCase = new FindOneProductUseCase(this.repository);
+    const useCase = new FindOneProductUseCase(this.productsRepository);
 
     const output = await useCase.execute(+id);
 
@@ -59,7 +60,7 @@ export class ProductsController {
   @UseGuards(OnlyAdminGuard)
   @Patch(':id/apply-discount')
   async applyDiscount(@Param() { id }, @Body() { discount }) {
-    const useCase = new ApplyProductDiscountUseCase(this.repository);
+    const useCase = new ApplyProductDiscountUseCase(this.productsRepository);
 
     await useCase.execute(+id, discount);
   }
@@ -67,7 +68,7 @@ export class ProductsController {
   @UseGuards(OnlyAdminGuard)
   @Post()
   async create(@Body() createProductDto: CreateProductDto) {
-    const useCase = new RegisterProductUseCase(this.repository);
+    const useCase = new RegisterProductUseCase(this.productsRepository);
 
     await useCase.execute(createProductDto);
   }
@@ -77,7 +78,7 @@ export class ProductsController {
   @HttpCode(204)
   async deleteById(@Param() { id }) {
     try {
-      const useCase = new DeleteProductByIdUseCase(this.repository);
+      const useCase = new DeleteProductByIdUseCase(this.productsRepository);
       await useCase.execute(+id);
     } catch (error) {
       httpErrorHandler(error);

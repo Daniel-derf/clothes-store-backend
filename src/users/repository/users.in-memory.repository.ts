@@ -1,6 +1,8 @@
+import { Injectable } from '@nestjs/common';
 import User from '../entities/user.entity';
 import IUsersRepository from './users.interface.repository';
 
+@Injectable()
 export default class UsersInMemoryRepository implements IUsersRepository {
   users: User[] = [
     new User({

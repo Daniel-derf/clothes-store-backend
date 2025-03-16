@@ -1,13 +1,9 @@
+import { Inject, Injectable } from '@nestjs/common';
 import User from '../entities/user.entity';
 import IUsersRepository from './users.interface.repository';
-import * as pgPromise from 'pg-promise';
+import { connection } from '../../infra/database/psql-connection';
 
-const PSQL_URL =
-  process.env.PSQL_URL ?? 'postgres://user:123456@localhost:5432/store';
-
-const pgp = pgPromise();
-const connection = pgp(PSQL_URL);
-
+@Injectable()
 export default class UsersPostgresRepository implements IUsersRepository {
   async findAll(): Promise<User[]> {
     const usersData = await connection.query('select * from store.users');

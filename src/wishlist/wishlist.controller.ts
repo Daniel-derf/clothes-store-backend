@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Inject,
   NotFoundException,
   Post,
   Req,
@@ -19,12 +20,10 @@ import ProductsPostgresRepository from '../products/repository/products.postgres
 
 @Controller('wishlist')
 export class WishlistController {
-  constructor() {}
-
-  private wishlistRepository: IWishlistRepository =
-    new WishlistPostgresRepository();
-  private productsRepository: IProductsRepository =
-    new ProductsPostgresRepository();
+  constructor(
+    @Inject('IWishlistRepository') readonly wishlistRepository,
+    @Inject('IProductsRepository') readonly productsRepository,
+  ) {}
 
   @Post('add-products')
   async addProductToWishlist(@Req() req) {
