@@ -30,15 +30,7 @@ import { ProvidersModule } from './infra/providers/providers.module';
     ProvidersModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    UsersInMemoryRepository,
-    UsersPostgresRepository,
-    {
-      provide: 'IUsersRepository',
-      useExisting: UsersPostgresRepository,
-    },
-  ],
+  providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

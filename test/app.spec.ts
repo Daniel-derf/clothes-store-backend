@@ -5,11 +5,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { AppModule } from '../src/app.module';
 import * as pgPromise from 'pg-promise';
+import UsersInMemoryRepository from '../src/users/repository/users.in-memory.repository';
+import WishlistInMemoryRepository from '../src/wishlist/repository/wishlist.in-memory.repository';
+import OrdersInMemoryRepository from '../src/orders/repository/orders.in-memory.repository';
+import { ProductsInMemoryRepository } from '../src/products/repository/products.in-memory.repository';
 
-const PSQL_URL =
-  process.env.PSQL_URL ?? 'postgres://user:123456@localhost:5432/store';
-const pgp = pgPromise();
-const connection = pgp(PSQL_URL);
+import { connection } from '../src/infra/database/psql-connection';
 
 describe('HTTP Integration Tests', () => {
   let app: INestApplication;
@@ -39,20 +40,28 @@ describe('HTTP Integration Tests', () => {
       imports: [AppModule],
     }).compile();
 
+    // .overrideProvider('IUsersRepository')
+    // .useValue(UsersInMemoryRepository)
+    // .overrideProvider('IWishlistRepository')
+    // .useValue(WishlistInMemoryRepository)
+    // .overrideProvider('IOrdersRepository')
+    // .useValue(OrdersInMemoryRepository)
+    // .overrideProvider('IProductsRepository')
+    // .useValue(ProductsInMemoryRepository)
+
     app = moduleFixture.createNestApplication();
     await app.init();
   });
 
+  // reset db before each
   beforeEach(async () => {
-    const IS_USING_DATABASE = true;
-
-    if (IS_USING_DATABASE) {
+    try {
       const RESET_DB_COMMAND = fs
         .readFileSync(path.resolve(__dirname, '../init.sql'))
         .toString();
 
       await connection.none(RESET_DB_COMMAND);
-    }
+    } catch (error) {}
   });
 
   describe('Products tests', () => {

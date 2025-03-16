@@ -5,9 +5,6 @@ import UsersPostgresRepository from '../users/repository/users.postgres.reposito
 
 @Module({
   controllers: [AuthController],
-  providers: [
-    UsersPostgresRepository,
-    { provide: 'IUsersRepository', useExisting: UsersPostgresRepository },
-  ],
+  providers: [],
 })
 export class AuthModule {}

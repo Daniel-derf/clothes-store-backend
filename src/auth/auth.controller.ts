@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Inject,
+  InternalServerErrorException,
   Post,
 } from '@nestjs/common';
 
@@ -31,6 +32,9 @@ export class AuthController {
     const res = await useCase.execute(loginDto).catch((err) => {
       if (err.message === 'Invalid credentials')
         throw new BadRequestException('Invalid Credentials');
+      else {
+        throw new InternalServerErrorException(err.message);
+      }
     });
 
     return res;
