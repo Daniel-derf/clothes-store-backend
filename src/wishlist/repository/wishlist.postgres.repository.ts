@@ -15,7 +15,7 @@ export default class WishlistPostgresRepository implements IWishlistRepository {
       [userId],
     );
 
-    return new Wishlist(wishlistData);
+    if (wishlistData) return new Wishlist(wishlistData);
   }
 
   async save(wishlist: Wishlist): Promise<void> {

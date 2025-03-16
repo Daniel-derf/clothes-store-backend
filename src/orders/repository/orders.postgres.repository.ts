@@ -22,7 +22,7 @@ export default class OrdersPostgresRepository implements IOrdersRepository {
   async findAll(): Promise<Order[]> {
     const ordersData = await connection.query(`SELECT * FROM store.orders`);
 
-    return ordersData.map((order) => new Order(order));
+    if (ordersData.length) return ordersData.map((order) => new Order(order));
   }
 
   async findAllByUserId(userId: number): Promise<Order[]> {
@@ -31,12 +31,13 @@ export default class OrdersPostgresRepository implements IOrdersRepository {
       [userId],
     );
 
-    return ordersData.map(
-      (order) =>
-        new Order({
-          ...order,
-        }),
-    );
+    if (ordersData.length)
+      return ordersData.map(
+        (order) =>
+          new Order({
+            ...order,
+          }),
+      );
   }
 
   async findOneByUserId(userId: number, orderId: number): Promise<Order> {

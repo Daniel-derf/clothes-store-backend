@@ -12,7 +12,7 @@ export default class UsersPostgresRepository implements IUsersRepository {
   async findAll(): Promise<User[]> {
     const usersData = await connection.query('select * from store.users');
 
-    return usersData.map((user) => new User(user));
+    if (usersData.length) return usersData.map((user) => new User(user));
   }
 
   async findById(id: number): Promise<User> {
@@ -21,7 +21,7 @@ export default class UsersPostgresRepository implements IUsersRepository {
       [id],
     );
 
-    return new User(userData);
+    if (userData) return new User(userData);
   }
 
   async findByEmail(email: string): Promise<User> {
@@ -30,7 +30,7 @@ export default class UsersPostgresRepository implements IUsersRepository {
       [email],
     );
 
-    return new User(userData);
+    if (userData) return new User(userData);
   }
 
   async save(user: User): Promise<void> {

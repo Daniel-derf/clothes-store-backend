@@ -11,7 +11,7 @@ export default class RegisterProductUseCase {
       registerProductDto;
 
     const product = new Product({
-      id: -1,
+      id: 0,
       name,
       price,
       sex,

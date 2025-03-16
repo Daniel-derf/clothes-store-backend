@@ -15,7 +15,8 @@ export default class ProductsPostgresRepository implements IProductsRepository {
       'SELECT * from store.products',
     );
 
-    return productsData.map((product) => new Product(product));
+    if (productsData.length)
+      return productsData.map((product) => new Product(product));
   }
 
   async findById(id: number): Promise<Product> {
@@ -24,13 +25,13 @@ export default class ProductsPostgresRepository implements IProductsRepository {
       [id],
     );
 
-    return new Product(productData);
+    if (productData) return new Product(productData);
   }
 
   async save(product: Product): Promise<void> {
     if (product.id === 0) {
       await connection.query(
-        'insert into store.products p (p.name, p.price, p.sex, p.description, p."ratingId", p."availableSizeQtt") values ($1, $2, $3, $4, $5, $6)',
+        'insert into store.products (name, price, sex, description, "ratingId", "availableSizeQtt") values ($1, $2, $3, $4, $5, $6)',
         [
           product.name,
           product.price,

@@ -118,11 +118,11 @@ describe('HTTP Integration Tests', () => {
         .expect(201);
 
       await request(app.getHttpServer())
-        .get('/products/6')
+        .get('/products')
         .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .expect((res) => {
-          const product = res.body;
+          const product = res.body[res.body.length - 1];
 
           expect(product).toHaveProperty('id');
           expect(product).toHaveProperty('name', newProduct.name);
