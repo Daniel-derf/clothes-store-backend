@@ -29,7 +29,7 @@ export default class WishlistPostgresRepository implements IWishlistRepository {
     }
 
     await connection.query(
-      'update store.wishlist set productsIds=$1, userId=$2',
+      'update store.wishlist set "productsIds"=$1, "userId"=$2',
       [wishlist.productsIds, wishlist.userId],
     );
   }

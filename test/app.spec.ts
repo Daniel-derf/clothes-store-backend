@@ -16,15 +16,6 @@ describe('HTTP Integration Tests', () => {
   let token: string;
 
   beforeAll(async () => {
-    const isUsingDatabase = true;
-
-    if (isUsingDatabase) {
-      const sql = fs
-        .readFileSync(path.resolve(__dirname, '../init.sql'))
-        .toString();
-      await connection.none(sql);
-    }
-
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -50,6 +41,18 @@ describe('HTTP Integration Tests', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+  });
+
+  beforeEach(async () => {
+    const IS_USING_DATABASE = true;
+
+    if (IS_USING_DATABASE) {
+      const sql = fs
+        .readFileSync(path.resolve(__dirname, '../init.sql'))
+        .toString();
+
+      await connection.none(sql);
+    }
   });
 
   describe('Products tests', () => {
@@ -99,6 +102,18 @@ describe('HTTP Integration Tests', () => {
         .expect(404);
     });
 
+    it('should delete a product by id', async () => {
+      await request(app.getHttpServer())
+        .delete('/products/1')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(204);
+
+      await request(app.getHttpServer())
+        .get('/products/1')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(404);
+    });
+
     it('should apply a discount to a product by its id', async () => {
       await request(app.getHttpServer())
         .get('/products/1')
@@ -122,18 +137,6 @@ describe('HTTP Integration Tests', () => {
 
           expect(product.price).toEqual(85);
         });
-    });
-
-    it('should delete a product by id', async () => {
-      await request(app.getHttpServer())
-        .delete('/products/1')
-        .set('Authorization', `Bearer ${token}`)
-        .expect(204);
-
-      await request(app.getHttpServer())
-        .get('/products/1')
-        .set('Authorization', `Bearer ${token}`)
-        .expect(404);
     });
 
     it('should get an error by trying to delete a inexistent product by ID', async () => {

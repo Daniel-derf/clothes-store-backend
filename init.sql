@@ -56,6 +56,9 @@ insert into store.orders ("userId", "productsIds", "totalPrice", status) values
 (3, '{204, 205, 206}', 150.75, 'PREPARATION'),
 (4, '{204, 205, 206}', 150.75, 'PREPARATION');
 
+-- wishlist
+insert into store.wishlist ("userId", "productsIds") values (4, '{1, 2}');
+
 
 
 
