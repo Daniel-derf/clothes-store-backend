@@ -22,6 +22,14 @@ export class Product {
     return this.availableSizeQtt[size] > 0;
   }
 
+  isAvailableToQuantity(size: string, quantity: number) {
+    return this.availableSizeQtt[size] >= quantity;
+  }
+
+  getAvailableExemplars(size: string) {
+    return this.availableSizeQtt[size];
+  }
+
   removeAppliedDiscount() {
     if (this.appliedDiscountPercentage) {
       this.price += (this.price / 100) * this.appliedDiscountPercentage;

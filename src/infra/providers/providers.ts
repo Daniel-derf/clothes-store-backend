@@ -4,29 +4,7 @@ import UsersPostgresRepository from '../../users/repository/users.postgres.repos
 import WishlistPostgresRepository from '../../wishlist/repository/wishlist.postgres.repository';
 import OrdersPostgresRepository from '../../orders/repository/orders.postgres.repository';
 import ProductsPostgresRepository from '../../products/repository/products.postgres.repository';
-import UsersInMemoryRepository from '../../users/repository/users.in-memory.repository';
-import WishlistInMemoryRepository from '../../wishlist/repository/wishlist.in-memory.repository';
-import OrdersInMemoryRepository from '../../orders/repository/orders.in-memory.repository';
-import { ProductsInMemoryRepository } from '../../products/repository/products.in-memory.repository';
-
-// export const providers: Provider[] = [
-//   {
-//     provide: 'IUsersRepository',
-//     useClass: UsersInMemoryRepository,
-//   },
-//   {
-//     provide: 'IWishlistRepository',
-//     useClass: WishlistInMemoryRepository,
-//   },
-//   {
-//     provide: 'IOrdersRepository',
-//     useClass: OrdersInMemoryRepository,
-//   },
-//   {
-//     provide: 'IProductsRepository',
-//     useClass: ProductsInMemoryRepository,
-//   },
-// ];
+import CartInMemoryRepository from '../../cart/repository/cart.in-memory.repository';
 
 export const providers: Provider[] = [
   {
@@ -45,4 +23,5 @@ export const providers: Provider[] = [
     provide: 'IProductsRepository',
     useClass: ProductsPostgresRepository,
   },
+  { provide: 'ICartRepository', useClass: CartInMemoryRepository },
 ];

@@ -31,36 +31,4 @@ export class UsersController {
 
     return user;
   }
-
-  // @UseGuards(AuthorizationGuard)
-  // @Get(':id/orders')
-  // async findUserOrders(@Param() { id }) {
-  //   const orders = await this.ordersRepository.findAllByUserId(+id);
-
-  //   return orders;
-  // }
-
-  // @UseGuards(AuthorizationGuard)
-  // @Get(':id/orders/:orderId')
-  // async findUserOrder(@Param() { id, orderId }) {
-  //   const order = await this.ordersRepository.findOneByUserId(+id, +orderId);
-
-  //   return order;
-  // }
-
-  // @UseGuards(AuthorizationGuard)
-  // @Patch(':id/orders/:orderId/update-status')
-  // async updateUserOrderStatus(@Param() { id, orderId }, @Body() { status }) {
-  //   const useCase = new UpdateOrderStatusUseCase(this.ordersRepository);
-
-  //   await useCase.execute(+orderId, +id, status);
-  // }
-
-  // @UseGuards(AuthorizationGuard)
-  // @Post(':id/orders')
-  // async createUserOrder(@Body() createOrderDto) {
-  //   const order = new Order(createOrderDto);
-
-  //   await this.ordersRepository.save(order);
-  // }
 }

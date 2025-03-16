@@ -4,11 +4,6 @@ import * as request from 'supertest';
 import * as fs from 'fs';
 import * as path from 'path';
 import { AppModule } from '../src/app.module';
-import * as pgPromise from 'pg-promise';
-import UsersInMemoryRepository from '../src/users/repository/users.in-memory.repository';
-import WishlistInMemoryRepository from '../src/wishlist/repository/wishlist.in-memory.repository';
-import OrdersInMemoryRepository from '../src/orders/repository/orders.in-memory.repository';
-import { ProductsInMemoryRepository } from '../src/products/repository/products.in-memory.repository';
 
 import { connection } from '../src/infra/database/psql-connection';
 
@@ -39,15 +34,6 @@ describe('HTTP Integration Tests', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
-
-    // .overrideProvider('IUsersRepository')
-    // .useValue(UsersInMemoryRepository)
-    // .overrideProvider('IWishlistRepository')
-    // .useValue(WishlistInMemoryRepository)
-    // .overrideProvider('IOrdersRepository')
-    // .useValue(OrdersInMemoryRepository)
-    // .overrideProvider('IProductsRepository')
-    // .useValue(ProductsInMemoryRepository)
 
     app = moduleFixture.createNestApplication();
     await app.init();
@@ -520,10 +506,10 @@ describe('HTTP Integration Tests', () => {
     });
   });
 
-  describe.skip('Cart tests', () => {
+  describe('Cart tests', () => {
     it('should return 400 if trying to add a product with invalid quantity', async () => {
       await request(app.getHttpServer())
-        .post('/users/1/cart/add-item')
+        .post('/cart/add-item')
         .set('Authorization', `Bearer ${token}`)
         .send({ productId: 1, quantity: 0 }) // Quantidade inválida
         .expect(400);
@@ -531,15 +517,15 @@ describe('HTTP Integration Tests', () => {
 
     it('should add a product to the cart', async () => {
       await request(app.getHttpServer())
-        .post('/users/1/cart/add-item')
+        .post('/cart/add-item')
         .set('Authorization', `Bearer ${token}`)
-        .send({ productId: 1, quantity: 2 })
+        .send({ productId: 1, productSize: 'gg', quantity: 2 })
         .expect(201);
     });
 
     it('should get all products in the cart', async () => {
       await request(app.getHttpServer())
-        .get('/users/1/cart')
+        .get('cart/products')
         .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .expect((res) => {
@@ -561,7 +547,7 @@ describe('HTTP Integration Tests', () => {
 
     it('should remove a product from the cart', async () => {
       await request(app.getHttpServer())
-        .delete('/users/1/cart/remove-item')
+        .delete('/cart/remove-item')
         .set('Authorization', `Bearer ${token}`)
         .send({ productId: 1, quantity: 2 })
         .expect(204);
@@ -569,7 +555,7 @@ describe('HTTP Integration Tests', () => {
 
     it('should return 404 if trying to remove a non-existent product from the cart', async () => {
       await request(app.getHttpServer())
-        .delete('/users/1/cart/remove-item')
+        .delete('cart/remove-item')
         .set('Authorization', `Bearer ${token}`)
         .send({ productId: 9999, quantity: 1 }) // ID inexistente
         .expect(404);
