@@ -1,13 +1,30 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
+import * as fs from 'fs';
+import * as path from 'path';
 import { AppModule } from '../src/app.module';
+import * as pgPromise from 'pg-promise';
+
+const PSQL_URL =
+  process.env.PSQL_URL ?? 'postgres://user:123456@localhost:5432/store';
+const pgp = pgPromise();
+const connection = pgp(PSQL_URL);
 
 describe('HTTP Integration Tests', () => {
   let app: INestApplication;
   let token: string;
 
   beforeAll(async () => {
+    const isUsingDatabase = true;
+
+    if (isUsingDatabase) {
+      const sql = fs
+        .readFileSync(path.resolve(__dirname, '../init.sql'))
+        .toString();
+      await connection.none(sql);
+    }
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -82,6 +99,31 @@ describe('HTTP Integration Tests', () => {
         .expect(404);
     });
 
+    it('should apply a discount to a product by its id', async () => {
+      await request(app.getHttpServer())
+        .get('/products/1')
+        .set('Authorization', `Bearer ${token}`)
+        .expect((res) => {
+          const product = res.body;
+
+          expect(product.price).toEqual(100);
+        });
+
+      await request(app.getHttpServer())
+        .patch('/products/1/apply-discount')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ discount: 15 });
+
+      await request(app.getHttpServer())
+        .get('/products/1')
+        .set('Authorization', `Bearer ${token}`)
+        .expect((res) => {
+          const product = res.body;
+
+          expect(product.price).toEqual(85);
+        });
+    });
+
     it('should delete a product by id', async () => {
       await request(app.getHttpServer())
         .delete('/products/1')
@@ -134,31 +176,6 @@ describe('HTTP Integration Tests', () => {
             'availableSizeQtt',
             newProduct.availableSizeQtt,
           );
-        });
-    });
-
-    it('should apply a discount to a product by its id', async () => {
-      await request(app.getHttpServer())
-        .get('/products/1')
-        .set('Authorization', `Bearer ${token}`)
-        .expect((res) => {
-          const product = res.body;
-
-          expect(product.price).toEqual(100);
-        });
-
-      await request(app.getHttpServer())
-        .patch('/products/1/apply-discount')
-        .set('Authorization', `Bearer ${token}`)
-        .send({ discount: 15 });
-
-      await request(app.getHttpServer())
-        .get('/products/1')
-        .set('Authorization', `Bearer ${token}`)
-        .expect((res) => {
-          const product = res.body;
-
-          expect(product.price).toEqual(85);
         });
     });
   });
