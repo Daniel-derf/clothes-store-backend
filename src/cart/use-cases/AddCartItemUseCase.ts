@@ -11,7 +11,7 @@ export default class AddCartItemUseCase {
   ) {}
 
   async execute(input: Input) {
-    const { productId, productSize, quantity, userId } = input;
+    const { productId, productSize, productQuantity, userId } = input;
 
     const product = await this.productsRepository.findById(productId);
     if (!product) throw new Error('This product was not found');
@@ -19,7 +19,7 @@ export default class AddCartItemUseCase {
     let cart = await this.cartRepository.findByUserId(userId);
     if (!cart) cart = new Cart({ id: 0, userId, products: [] });
 
-    cart.addProduct({ productId, productSize, quantity });
+    cart.addProduct({ productId, productSize, productQuantity });
 
     await this.cartRepository.save(cart);
   }
@@ -28,6 +28,6 @@ export default class AddCartItemUseCase {
 type Input = {
   productId: number;
   productSize: string;
-  quantity: number;
+  productQuantity: number;
   userId: number;
 };

@@ -9,8 +9,8 @@ export default class Cart {
     this.products = cartDto.products;
   }
 
-  addProduct({ productId, productSize, quantity }: Input) {
-    if (quantity <= 0) {
+  addProduct({ productId, productSize, productQuantity }: Input) {
+    if (productQuantity <= 0) {
       throw new Error('Invalid product quantity');
     }
 
@@ -21,20 +21,24 @@ export default class Cart {
     const isExistent = productIdx != -1;
 
     if (isExistent) {
-      this.products[productIdx].quantity += quantity;
+      this.products[productIdx].productQuantity += productQuantity;
       return;
     }
 
-    const newProduct = { productId, productSize, quantity };
+    const newProduct = { productId, productSize, productQuantity };
 
     this.products.push(newProduct);
+  }
+
+  getProducts() {
+    return this.products;
   }
 }
 
 type CartProduct = {
   productId: number;
   productSize: string;
-  quantity: number;
+  productQuantity: number;
 };
 
 type CartDto = {
@@ -45,6 +49,6 @@ type CartDto = {
 
 type Input = {
   productId: number;
-  quantity: number;
+  productQuantity: number;
   productSize: string;
 };

@@ -519,13 +519,21 @@ describe('HTTP Integration Tests', () => {
       await request(app.getHttpServer())
         .post('/cart/add-item')
         .set('Authorization', `Bearer ${token}`)
-        .send({ productId: 1, productSize: 'gg', quantity: 2 })
+        .send({ productId: 1, productSize: 'gg', productQuantity: 2 })
         .expect(201);
     });
 
     it('should get all products in the cart', async () => {
+      const input = { productId: 1, productSize: 'gg', productQuantity: 2 };
+
       await request(app.getHttpServer())
-        .get('cart/products')
+        .post('/cart/add-item')
+        .set('Authorization', `Bearer ${token}`)
+        .send(input)
+        .expect(201);
+
+      await request(app.getHttpServer())
+        .get('/cart/products')
         .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .expect((res) => {
@@ -534,13 +542,12 @@ describe('HTTP Integration Tests', () => {
           expect(Array.isArray(products)).toBe(true);
 
           products.forEach((product: unknown) => {
-            expect(product).toHaveProperty('id');
-            expect(product).toHaveProperty('name');
-            expect(product).toHaveProperty('price');
-            expect(product).toHaveProperty('sex');
-            expect(product).toHaveProperty('description');
-            expect(product).toHaveProperty('ratingId');
-            expect(product).toHaveProperty('availableSizeQtt');
+            expect(product).toHaveProperty('productId', input.productId);
+            expect(product).toHaveProperty(
+              'productQuantity',
+              input.productQuantity,
+            );
+            expect(product).toHaveProperty('productSize', input.productSize);
           });
         });
     });

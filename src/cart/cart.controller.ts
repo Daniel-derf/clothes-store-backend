@@ -1,5 +1,6 @@
-import { Body, Controller, Inject, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post, Req } from '@nestjs/common';
 import AddCartItemUseCase from './use-cases/AddCartItemUseCase';
+import GetCartProductsUseCase from './use-cases/GetCartProductsUseCase';
 
 @Controller('cart')
 export class CartController {
@@ -9,7 +10,10 @@ export class CartController {
   ) {}
 
   @Post('add-item')
-  async addItem(@Req() req, @Body() { productId, productSize, quantity }) {
+  async addItem(
+    @Req() req,
+    @Body() { productId, productSize, productQuantity },
+  ) {
     const useCase = new AddCartItemUseCase(
       this.cartRepository,
       this.productsRepository,
@@ -19,9 +23,20 @@ export class CartController {
       userId: req.user.id,
       productId,
       productSize,
-      quantity,
+      productQuantity,
     };
 
     await useCase.execute(input);
+  }
+
+  @Get('products')
+  async getCartProducts(@Req() req) {
+    const useCase = new GetCartProductsUseCase(this.cartRepository);
+
+    const input = req.user.id;
+
+    const output = await useCase.execute(input);
+
+    return output;
   }
 }
