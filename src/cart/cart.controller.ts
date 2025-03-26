@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import AddCartItemUseCase from './use-cases/AddCartItemUseCase';
 import GetCartProductsUseCase from './use-cases/GetCartProductsUseCase';
-import { NotFoundError } from 'rxjs';
 
 @Controller('cart')
 export class CartController {
@@ -48,6 +47,31 @@ export class CartController {
 
       throw new InternalServerErrorException(errorMsg);
     });
+  }
+
+  @Post('remove-item')
+  async removeItem(@Req() req, @Body() { productId }) {
+    const useCase = new AddCartItemUseCase(
+      this.cartRepository,
+      this.productsRepository,
+    );
+
+    const input = {
+      userId: req.user.id,
+      productId,
+    };
+
+    // await useCase.execute(input).catch((err) => {
+    //   const errorMsg: string = err.message;
+
+    //   if (errorMsg.includes('Invalid product quantity')) {
+    //     throw new BadRequestException(errorMsg);
+    //   }
+    //   if (errorMsg.includes('product was not found'))
+    //     throw new NotFoundException(errorMsg);
+
+    //   throw new InternalServerErrorException(errorMsg);
+    // });
   }
 
   @Get('products')

@@ -1,22 +1,20 @@
 drop schema store cascade;
 create schema store;
 
-create table store.orders (
-  id SERIAL PRIMARY KEY,
-  "userId" INT NOT NULL,
-  "productsIds" INT[],
-  "totalPrice" NUMERIC(10,2),
-  status VARCHAR(30)
-);
-
 create table store.products (
   id SERIAL PRIMARY KEY,
   name VARCHAR(50),
   price NUMERIC(10,2),
   sex CHAR(1),
   description TEXT,
-  "ratingId" INT,
-  "availableSizeQtt" JSONB
+  "ratingId" INT
+);
+
+create table store.available_sizes (
+  id SERIAL PRIMARY KEY,
+  size VARCHAR(2),
+  quantity INT,
+  "productId" INT REFERENCES store.products(id) ON DELETE CASCADE
 );
 
 create table store.users (
@@ -27,9 +25,17 @@ create table store.users (
   profile VARCHAR(10) CHECK (profile IN ('admin', 'client'))
 );
 
+create table store.orders (
+  id SERIAL PRIMARY KEY,
+  "userId" INT NOT NULL REFERENCES store.users(id) on delete cascade,
+  "productsIds" INT[],
+  "totalPrice" NUMERIC(10,2),
+  status VARCHAR(30)
+);
+
 create table store.wishlist (
   id SERIAL PRIMARY KEY,
-  "userId" INT NOT NULL,
+  "userId" INT REFERENCES store.users(id) ON DELETE CASCADE,
   "productsIds" INT[]
 );
 
@@ -42,12 +48,20 @@ insert into store.users (name, password, email, profile) values
 ('testUser4', '$2b$10$20IJmuLaI1P.duklED9Whu6QmkO2vgy.70K7mxZzZkmNvAh38YjAq', 'teste4@email.com', 'admin');
 
 -- products
-insert into store.products (name, price, sex, description, "ratingId", "availableSizeQtt") values
-('Product 1', 100, 'M', 'Description 1', 1, '{"gg": 5}'),
-('Product 2', 200, 'F', 'Description 2', 2, '{"gg": 3}'),
-('Product 3', 300, 'M', 'Description 3', 3, '{"gg": 2}'),
-('Product 4', 400, 'F', 'Description 4', 4, '{"gg": 4}'),
-('Product 5', 500, 'M', 'Description 5', 5, '{"gg": 1}');
+insert into store.products (name, price, sex, description, "ratingId") values
+('Product 1', 100, 'M', 'Description 1', 1),
+('Product 2', 200, 'F', 'Description 2', 2),
+('Product 3', 300, 'M', 'Description 3', 3),
+('Product 4', 400, 'F', 'Description 4', 4),
+('Product 5', 500, 'M', 'Description 5', 5);
+
+-- product sizes
+insert into store.available_sizes (size, quantity, "productId") values
+('gg', 2, 1),
+('pp', 2, 2),
+('g', 2, 3),
+('p', 2, 4),
+('m', 2, 5);
 
 -- orders
 insert into store.orders ("userId", "productsIds", "totalPrice", status) values
