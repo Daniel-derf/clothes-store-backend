@@ -31,6 +31,12 @@ export default class Cart {
   }
 
   removeProduct({ productId, productSize, productQuantity }: Input) {
+    const foundProduct = this.products.find(
+      (p) => p.productId === productId && p.productSize === productSize,
+    );
+
+    if (!foundProduct) throw new Error('Product not found');
+
     const newProducts = this.products.map((product) => {
       if (
         product.productId === productId &&

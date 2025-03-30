@@ -593,8 +593,16 @@ describe('HTTP Integration Tests', () => {
     });
 
     it('should return 404 if trying to remove a non-existent product from the cart', async () => {
+      const input = { productId: 1, productSize: 'gg', productQuantity: 2 };
+
       await request(app.getHttpServer())
-        .delete('cart/remove-item')
+        .post('/cart/add-item')
+        .set('Authorization', `Bearer ${token}`)
+        .send(input)
+        .expect(201);
+
+      await request(app.getHttpServer())
+        .delete('/cart/remove-item')
         .set('Authorization', `Bearer ${token}`)
         .send({ productId: 9999, quantity: 1 }) // ID inexistente
         .expect(404);

@@ -69,15 +69,12 @@ export class CartController {
     };
 
     await useCase.execute(input).catch((err) => {
-      console.log({ err });
-
       const errorMsg: string = err.message;
 
       if (errorMsg.includes('Invalid product quantity')) {
         throw new BadRequestException(errorMsg);
       }
-      if (errorMsg.includes('product was not found'))
-        throw new NotFoundException(errorMsg);
+      if (errorMsg.includes('not found')) throw new NotFoundException(errorMsg);
 
       throw new InternalServerErrorException(errorMsg);
     });

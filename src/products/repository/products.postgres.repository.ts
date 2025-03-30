@@ -70,7 +70,6 @@ export default class ProductsPostgresRepository implements IProductsRepository {
         for (const [size, quantity] of Object.entries(
           product.availableSizeQtt,
         )) {
-          console.log([id, size, quantity]);
           await connection.query(
             'insert into store.available_sizes ("productId", size, quantity) values ($1, $2, $3)',
             [id, size, quantity],
