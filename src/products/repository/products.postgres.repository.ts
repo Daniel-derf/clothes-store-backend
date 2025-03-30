@@ -15,6 +15,24 @@ export default class ProductsPostgresRepository implements IProductsRepository {
       'SELECT * from store.products',
     );
 
+    const availableProductsSizes: any[] = await connection.query(
+      'select * from store.available_sizes',
+    );
+
+    for (const product of productsData) {
+      const productSizes = {};
+
+      const sizes = availableProductsSizes.filter(
+        (size) => size.productId === product.id,
+      );
+
+      sizes.forEach((size) => {
+        productSizes[size.size] = size.quantity;
+      });
+
+      product['availableSizeQtt'] = productSizes;
+    }
+
     if (productsData.length)
       return productsData.map((product) => new Product(product));
   }
@@ -24,6 +42,19 @@ export default class ProductsPostgresRepository implements IProductsRepository {
       'select * from store.products p where p.id = $1',
       [id],
     );
+
+    const availableProductSizes: any[] = await connection.query(
+      'select * from store.available_sizes where "productId" = $1',
+      [productData.id],
+    );
+
+    const productSizes = {};
+
+    availableProductSizes.forEach((size) => {
+      productSizes[size.size] = size.quantity;
+    });
+
+    productData['availableSizeQtt'] = productSizes;
 
     if (productData) return new Product(productData);
   }
