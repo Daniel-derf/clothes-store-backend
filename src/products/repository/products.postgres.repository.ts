@@ -37,6 +37,8 @@ export default class ProductsPostgresRepository implements IProductsRepository {
       [id],
     );
 
+    if (!productData) return undefined;
+
     const availableProductSizes: any[] = await connection.query(
       'select * from store.available_sizes where "productId" = $1',
       [productData.id],
