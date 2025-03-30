@@ -20,9 +20,11 @@ export default class ProductsPostgresRepository implements IProductsRepository {
     );
 
     for (const product of productsData) {
-      const availableSize = this.availableSizesToProductEntity(
-        availableProductsSizes,
+      const sizes = availableProductsSizes.filter(
+        (size) => size.productId === product.id,
       );
+
+      const availableSize = this.availableSizesToProductEntity(sizes);
 
       product['availableSizeQtt'] = availableSize;
     }
@@ -53,8 +55,8 @@ export default class ProductsPostgresRepository implements IProductsRepository {
 
   async save(product: Product): Promise<void> {
     if (product.id === 0) {
-      await connection.query(
-        'insert into store.products (name, price, sex, description, "ratingId") values ($1, $2, $3, $4, $5)',
+      const { id } = await connection.one(
+        'insert into store.products (name, price, sex, description, "ratingId") values ($1, $2, $3, $4, $5) returning id',
         [
           product.name,
           product.price,
@@ -63,18 +65,46 @@ export default class ProductsPostgresRepository implements IProductsRepository {
           product.ratingId,
         ],
       );
-    } else {
+
+      if (product.availableSizeQtt) {
+        for (const [size, quantity] of Object.entries(
+          product.availableSizeQtt,
+        )) {
+          console.log([id, size, quantity]);
+          await connection.query(
+            'insert into store.available_sizes ("productId", size, quantity) values ($1, $2, $3)',
+            [id, size, quantity],
+          );
+        }
+      }
+
+      return;
+    }
+
+    await connection.query(
+      'update store.products set name=$1, price=$2, sex=$3, description=$4, "ratingId"=$5 where id=$6',
+      [
+        product.name,
+        product.price,
+        product.sex,
+        product.description,
+        product.ratingId,
+        product.id,
+      ],
+    );
+
+    if (product.availableSizeQtt) {
       await connection.query(
-        'update store.products set name=$1, price=$2, sex=$3, description=$4, "ratingId"=$5 where id=$6',
-        [
-          product.name,
-          product.price,
-          product.sex,
-          product.description,
-          product.ratingId,
-          product.id,
-        ],
+        'delete from store.available_sizes where "productId" = $1',
+        [product.id],
       );
+
+      for (const [size, quantity] of Object.entries(product.availableSizeQtt)) {
+        await connection.query(
+          'insert into store.available_sizes ("productId", size, quantity) values ($1, $2, $3)',
+          [product.id, size, quantity],
+        );
+      }
     }
   }
 
