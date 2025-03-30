@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   InternalServerErrorException,
@@ -11,6 +12,7 @@ import {
 } from '@nestjs/common';
 import AddCartItemUseCase from './use-cases/AddCartItemUseCase';
 import GetCartProductsUseCase from './use-cases/GetCartProductsUseCase';
+import RemoveCartItemUseCase from './use-cases/RemoveCartItemUseCase';
 
 @Controller('cart')
 export class CartController {
@@ -49,9 +51,12 @@ export class CartController {
     });
   }
 
-  @Post('remove-item')
-  async removeItem(@Req() req, @Body() { productId }) {
-    const useCase = new AddCartItemUseCase(
+  @Delete('remove-item')
+  async removeItem(
+    @Req() req,
+    @Body() { productId, productQuantity, productSize },
+  ) {
+    const useCase = new RemoveCartItemUseCase(
       this.cartRepository,
       this.productsRepository,
     );
@@ -59,19 +64,23 @@ export class CartController {
     const input = {
       userId: req.user.id,
       productId,
+      productSize,
+      productQuantity,
     };
 
-    // await useCase.execute(input).catch((err) => {
-    //   const errorMsg: string = err.message;
+    await useCase.execute(input).catch((err) => {
+      console.log({ err });
 
-    //   if (errorMsg.includes('Invalid product quantity')) {
-    //     throw new BadRequestException(errorMsg);
-    //   }
-    //   if (errorMsg.includes('product was not found'))
-    //     throw new NotFoundException(errorMsg);
+      const errorMsg: string = err.message;
 
-    //   throw new InternalServerErrorException(errorMsg);
-    // });
+      if (errorMsg.includes('Invalid product quantity')) {
+        throw new BadRequestException(errorMsg);
+      }
+      if (errorMsg.includes('product was not found'))
+        throw new NotFoundException(errorMsg);
+
+      throw new InternalServerErrorException(errorMsg);
+    });
   }
 
   @Get('products')

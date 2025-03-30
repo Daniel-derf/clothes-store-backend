@@ -30,6 +30,28 @@ export default class Cart {
     this.products.push(newProduct);
   }
 
+  removeProduct({ productId, productSize, productQuantity }: Input) {
+    const newProducts = this.products.map((product) => {
+      if (
+        product.productId === productId &&
+        product.productSize === productSize
+      ) {
+        product.productQuantity -= productQuantity;
+      }
+      return product;
+    });
+
+    const finalNewProducts = [];
+
+    for (const product of newProducts) {
+      if (product.productQuantity >= 0) {
+        finalNewProducts.push(product);
+      }
+    }
+
+    this.products = finalNewProducts;
+  }
+
   getProducts() {
     return this.products;
   }

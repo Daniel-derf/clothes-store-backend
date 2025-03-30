@@ -553,11 +553,43 @@ describe('HTTP Integration Tests', () => {
     });
 
     it('should remove a product from the cart', async () => {
+      const input = { productId: 1, productSize: 'gg', productQuantity: 2 };
+      const QUANTITY_TO_BE_REMOVED = 1;
+
+      await request(app.getHttpServer())
+        .post('/cart/add-item')
+        .set('Authorization', `Bearer ${token}`)
+        .send(input)
+        .expect(201);
+
       await request(app.getHttpServer())
         .delete('/cart/remove-item')
         .set('Authorization', `Bearer ${token}`)
-        .send({ productId: 1, quantity: 2 })
-        .expect(204);
+        .send({
+          productId: 1,
+          productSize: 'gg',
+          productQuantity: QUANTITY_TO_BE_REMOVED,
+        })
+        .expect(200);
+
+      await request(app.getHttpServer())
+        .get('/cart/products')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200)
+        .expect((res) => {
+          const products = res.body;
+
+          expect(Array.isArray(products)).toBe(true);
+
+          products.forEach((product: unknown) => {
+            expect(product).toHaveProperty('productId', input.productId);
+            expect(product).toHaveProperty(
+              'productQuantity',
+              input.productQuantity - QUANTITY_TO_BE_REMOVED,
+            );
+            expect(product).toHaveProperty('productSize', input.productSize);
+          });
+        });
     });
 
     it('should return 404 if trying to remove a non-existent product from the cart', async () => {
