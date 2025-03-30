@@ -20,17 +20,11 @@ export default class ProductsPostgresRepository implements IProductsRepository {
     );
 
     for (const product of productsData) {
-      const productSizes = {};
-
-      const sizes = availableProductsSizes.filter(
-        (size) => size.productId === product.id,
+      const availableSize = this.availableSizesToProductEntity(
+        availableProductsSizes,
       );
 
-      sizes.forEach((size) => {
-        productSizes[size.size] = size.quantity;
-      });
-
-      product['availableSizeQtt'] = productSizes;
+      product['availableSizeQtt'] = availableSize;
     }
 
     if (productsData.length)
@@ -48,13 +42,9 @@ export default class ProductsPostgresRepository implements IProductsRepository {
       [productData.id],
     );
 
-    const productSizes = {};
-
-    availableProductSizes.forEach((size) => {
-      productSizes[size.size] = size.quantity;
-    });
-
-    productData['availableSizeQtt'] = productSizes;
+    productData['availableSizeQtt'] = this.availableSizesToProductEntity(
+      availableProductSizes,
+    );
 
     if (productData) return new Product(productData);
   }
@@ -62,26 +52,24 @@ export default class ProductsPostgresRepository implements IProductsRepository {
   async save(product: Product): Promise<void> {
     if (product.id === 0) {
       await connection.query(
-        'insert into store.products (name, price, sex, description, "ratingId", "availableSizeQtt") values ($1, $2, $3, $4, $5, $6)',
+        'insert into store.products (name, price, sex, description, "ratingId") values ($1, $2, $3, $4, $5)',
         [
           product.name,
           product.price,
           product.sex,
           product.description,
           product.ratingId,
-          product.availableSizeQtt,
         ],
       );
     } else {
       await connection.query(
-        'update store.products set name=$1, price=$2, sex=$3, description=$4, "ratingId"=$5, "availableSizeQtt" = $6 where id=$7',
+        'update store.products set name=$1, price=$2, sex=$3, description=$4, "ratingId"=$5 where id=$6',
         [
           product.name,
           product.price,
           product.sex,
           product.description,
           product.ratingId,
-          product.availableSizeQtt,
           product.id,
         ],
       );
@@ -92,5 +80,15 @@ export default class ProductsPostgresRepository implements IProductsRepository {
     await connection.query('delete from store.products p where p.id=$1', [
       productId,
     ]);
+  }
+
+  private availableSizesToProductEntity(sizes: any[]) {
+    const productSizes = {};
+
+    sizes.forEach((size) => {
+      productSizes[size.size] = size.quantity;
+    });
+
+    return productSizes;
   }
 }
