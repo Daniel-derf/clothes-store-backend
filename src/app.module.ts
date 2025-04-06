@@ -17,6 +17,8 @@ import { WishlistModule } from './wishlist/wishlist.module';
 import { CartModule } from './cart/cart.module';
 
 import { ProvidersModule } from './infra/providers/providers.module';
+import { TransportsModule } from './transports/transports.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { ProvidersModule } from './infra/providers/providers.module';
     WishlistModule,
     CartModule,
     ProvidersModule,
+    TransportsModule,
+    PaymentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
