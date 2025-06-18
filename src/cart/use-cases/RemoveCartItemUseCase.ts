@@ -1,7 +1,4 @@
-import Order from '../../orders/entities/order.entity';
 import IProductsRepository from '../../products/repository/products.interface.repository';
-import IUsersRepository from '../../users/repository/users.interface.repository';
-import Cart from '../entities/cart.entity';
 import ICartRepository from '../repository/cart.interface.repository';
 
 export default class RemoveCartItemUseCase {
@@ -13,7 +10,7 @@ export default class RemoveCartItemUseCase {
   async execute(input: Input) {
     const { productId, productSize, productQuantity, userId } = input;
 
-    let cart = await this.cartRepository.findByUserId(userId);
+    const cart = await this.cartRepository.findByUserId(userId);
 
     if (!cart) throw new Error('Cart not found');
 

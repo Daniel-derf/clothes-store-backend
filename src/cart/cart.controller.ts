@@ -13,6 +13,8 @@ import {
 import AddCartItemUseCase from './use-cases/AddCartItemUseCase';
 import GetCartProductsUseCase from './use-cases/GetCartProductsUseCase';
 import RemoveCartItemUseCase from './use-cases/RemoveCartItemUseCase';
+import { RemoveCartItemDto } from './dto/remove-item.dto';
+import { AddCartItemDto } from './dto/add-item.dto';
 
 @Controller('cart')
 export class CartController {
@@ -24,7 +26,7 @@ export class CartController {
   @Post('add-item')
   async addItem(
     @Req() req,
-    @Body() { productId, productSize, productQuantity },
+    @Body() { productId, productSize, productQuantity }: AddCartItemDto,
   ) {
     const useCase = new AddCartItemUseCase(
       this.cartRepository,
@@ -54,7 +56,7 @@ export class CartController {
   @Delete('remove-item')
   async removeItem(
     @Req() req,
-    @Body() { productId, productQuantity, productSize },
+    @Body() { productId, productQuantity, productSize }: RemoveCartItemDto,
   ) {
     const useCase = new RemoveCartItemUseCase(
       this.cartRepository,
