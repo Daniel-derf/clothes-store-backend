@@ -1,13 +1,6 @@
+import { connection } from '../../infra/database/psql-connection';
 import { Product } from '../entities/product.entity';
 import IProductsRepository from './products.interface.repository';
-
-import * as pgPromise from 'pg-promise';
-
-const PSQL_URL =
-  process.env.PSQL_URL ?? 'postgres://user:123456@localhost:5432/store';
-
-const pgp = pgPromise();
-const connection = pgp(PSQL_URL);
 
 export default class ProductsPostgresRepository implements IProductsRepository {
   async findAll(): Promise<Product[]> {

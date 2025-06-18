@@ -1,12 +1,6 @@
+import { connection } from '../../infra/database/psql-connection';
 import Wishlist from '../entities/wishlist.entity';
 import IWishlistRepository from './wishlist.interface.repository';
-import * as pgPromise from 'pg-promise';
-
-const PSQL_URL =
-  process.env.PSQL_URL ?? 'postgres://user:123456@localhost:5432/store';
-
-const pgp = pgPromise();
-const connection = pgp(PSQL_URL);
 
 export default class WishlistPostgresRepository implements IWishlistRepository {
   async findByUserId(userId: number): Promise<Wishlist> {

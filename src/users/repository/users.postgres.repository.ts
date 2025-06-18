@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import User from '../entities/user.entity';
 import IUsersRepository from './users.interface.repository';
 import { connection } from '../../infra/database/psql-connection';
