@@ -1,22 +1,19 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
   HttpCode,
-  HttpStatus,
   Inject,
   NotFoundException,
   Post,
   Req,
 } from '@nestjs/common';
-import { WishlistService } from './wishlist.service';
-import IWishlistRepository from './repository/wishlist.interface.repository';
-import WishlistInMemoryRepository from './repository/wishlist.in-memory.repository';
-import IProductsRepository from '../products/repository/products.interface.repository';
-import { ProductsInMemoryRepository } from '../products/repository/products.in-memory.repository';
+
 import DeleteWishlistProductUseCase from './use-cases/DeleteWishlistProduct.use-case';
-import WishlistPostgresRepository from './repository/wishlist.postgres.repository';
-import ProductsPostgresRepository from '../products/repository/products.postgres.repository';
+import { AddProductToWishlistDto } from './dto/add-product-to-wishlist.dto';
+import Wishlist from './entities/wishlist.entity';
+import { RemoveFromWishlistDto } from './dto/remove-product-from-wishlist.dto';
 
 @Controller('wishlist')
 export class WishlistController {
@@ -26,11 +23,15 @@ export class WishlistController {
   ) {}
 
   @Post('add-products')
-  async addProductToWishlist(@Req() req) {
+  async addProductToWishlist(
+    @Req() req,
+    @Body() { productsIds }: AddProductToWishlistDto,
+  ) {
     const userId = req.user.id;
-    const productsIds = req.body?.productsIds;
 
-    const wishlist = await this.wishlistRepository.findByUserId(userId);
+    const wishlist: Wishlist =
+      await this.wishlistRepository.findByUserId(userId);
+
     wishlist.addProducts(productsIds);
 
     await this.wishlistRepository.save(wishlist);
@@ -55,9 +56,11 @@ export class WishlistController {
 
   @Delete('remove-products')
   @HttpCode(204)
-  async removeProductFromWishlist(@Req() req) {
+  async removeProductFromWishlist(
+    @Req() req,
+    @Body() { productsIds }: RemoveFromWishlistDto,
+  ) {
     const userId = req.user.id;
-    const productsIds = req.body?.productsIds;
 
     const useCase = new DeleteWishlistProductUseCase(this.wishlistRepository);
 
