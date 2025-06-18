@@ -30,7 +30,6 @@ import ApplyProductDiscountUseCase from './use-cases/ApplyProductDiscount.use-ca
 
 // guards
 import { OnlyAdminGuard } from '../authorization/authorization.guard';
-import ProductsPostgresRepository from './repository/products.postgres.repository';
 
 @Controller('products')
 export class ProductsController {

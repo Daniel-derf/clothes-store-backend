@@ -19,6 +19,7 @@ export class AuthMiddleware implements NestMiddleware {
 
       next();
     } catch (error) {
+      console.log('error: ', error.message);
       return res.status(403).send('Invalid token');
     }
   }

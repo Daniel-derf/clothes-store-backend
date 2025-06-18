@@ -26,28 +26,19 @@ describe('HTTP Integration Tests', () => {
         password: 'TesteSenhaForte@123987!',
       });
 
-    const { jwt } = loginRes.body;
-    token = jwt;
+    token = loginRes.body.jwt;
   });
 
   beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = moduleFixture.createNestApplication();
-    await app.init();
+    const RESET_DB_COMMAND = fs
+      .readFileSync(path.resolve(__dirname, '../init.sql'))
+      .toString();
+    await connection.none(RESET_DB_COMMAND);
   });
 
-  // reset db before each
-  beforeEach(async () => {
-    try {
-      const RESET_DB_COMMAND = fs
-        .readFileSync(path.resolve(__dirname, '../init.sql'))
-        .toString();
-
-      await connection.none(RESET_DB_COMMAND);
-    } catch (error) {}
+  afterAll(async () => {
+    await app.close(); // Fecha o servidor NestJS
+    await connection.$pool.end(); // Fecha a conexão pg-promise (se estiver usando)
   });
 
   describe('Products tests', () => {
