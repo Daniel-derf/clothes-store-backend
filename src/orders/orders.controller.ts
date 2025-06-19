@@ -9,11 +9,6 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import IOrdersRepository from './repository/orders.interface.repository';
-
-// repositories
-import OrdersPostgresRepository from './repository/orders.postgres.repository';
-import OrdersInMemoryRepository from './repository/orders.in-memory.repository';
 
 // guards
 import {
@@ -22,6 +17,8 @@ import {
 } from '../authorization/authorization.guard';
 import UpdateOrderStatusUseCase from './use-cases/UpdateOrderStatusUseCase';
 import CreateOrderUseCase from './use-cases/CreateOrderUseCase';
+import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
+import { CreateOrderDto } from './dto/create-order.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -46,7 +43,10 @@ export class OrdersController {
 
   @UseGuards(OnlyAdminGuard)
   @Patch(':orderId/update-status')
-  async updateOrderStatus(@Param() { orderId }, @Body() { status }) {
+  async updateOrderStatus(
+    @Param() { orderId },
+    @Body() { status }: UpdateOrderStatusDto,
+  ) {
     const useCase = new UpdateOrderStatusUseCase(this.ordersRepository);
 
     await useCase.execute(+orderId, status);
@@ -54,7 +54,7 @@ export class OrdersController {
 
   @UseGuards(AuthorizationGuard)
   @Post('create-order')
-  async createOrder(@Body() createOrderDto, @Req() req) {
+  async createOrder(@Body() createOrderDto: CreateOrderDto, @Req() req) {
     const useCase = new CreateOrderUseCase(this.ordersRepository);
 
     await useCase.execute(createOrderDto, +req.user.id);
