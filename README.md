@@ -78,8 +78,6 @@ If you prefer to do it manually:
 
 ---
 
-# 🛍️ E-commerce Backend - NestJS
-
 ## 🇧🇷 Portuguese
 
 Backend completo para um sistema de E-commerce desenvolvido com **NestJS**, aplicando as melhores práticas de engenharia de software:
