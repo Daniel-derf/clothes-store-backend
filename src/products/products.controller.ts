@@ -30,6 +30,7 @@ import ApplyProductDiscountUseCase from './use-cases/ApplyProductDiscount.use-ca
 
 // guards
 import { OnlyAdminGuard } from '../authorization/authorization.guard';
+import { ApplyDiscountDto } from './dto/apply-discount.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -60,7 +61,7 @@ export class ProductsController {
 
   @UseGuards(OnlyAdminGuard)
   @Patch(':id/apply-discount')
-  async applyDiscount(@Param() { id }, @Body() { discount }) {
+  async applyDiscount(@Param() { id }, @Body() { discount }: ApplyDiscountDto) {
     const useCase = new ApplyProductDiscountUseCase(this.productsRepository);
 
     await useCase.execute(+id, discount);
