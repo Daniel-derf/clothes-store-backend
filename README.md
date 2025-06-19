@@ -1,5 +1,87 @@
 # 🛍️ E-commerce Backend - NestJS
 
+## 🇺🇸 English
+
+A complete backend for an E-commerce system built with **NestJS**, following the best software engineering practices:
+
+- ✅ TDD (Test-Driven Development)
+- 🧠 DDD (Domain-Driven Design)
+- 🧼 Clean Architecture
+- 📄 Swagger for API documentation
+
+---
+
+## 🚀 Technologies Used
+
+- **Node.js**
+- **NestJS**
+- **PostgreSQL**
+- **Swagger** (Interactive documentation)
+- **Jest + Supertest** (Integration tests)
+- **Docker** (optional)
+
+---
+
+## ⚙️ How to run the project
+
+> **Attention:** The database must be running before starting the application. Follow the instructions in the section below to start the database using Docker or manually.
+
+```bash
+# Install dependencies
+npm install
+
+# Configure environment variables
+cp .env.example .env
+
+# Run the application in development mode
+npm run start:dev
+
+# Run tests with automatic database reset
+npm run test
+```
+
+---
+
+## 🐳 Quick start with Docker and database
+
+You can automate the setup of the database and containers using the `bootstrap.sh` script:
+
+```bash
+# Give execution permission to the script (only the first time)
+chmod +x bootstrap.sh
+
+# Run the script to start the containers and apply init.sql
+./bootstrap.sh
+```
+
+The script will:
+
+1. Start the required Docker containers (`docker compose up --build -d`)
+2. Wait for PostgreSQL to be ready
+3. Apply the initialization SQL script (`init.sql`)
+
+---
+
+### Manual alternative
+
+If you prefer to do it manually:
+
+1. Start the database:
+   ```bash
+   docker compose up --build -d
+   ```
+2. Wait for the database container to start (you can check with `docker ps`).
+3. Apply the SQL script:
+   ```bash
+   docker exec -i clothes-store-db psql -U user -d store < init.sql
+   ```
+
+---
+
+# 🛍️ E-commerce Backend - NestJS
+
+## 🇧🇷 Portuguese
+
 Backend completo para um sistema de E-commerce desenvolvido com **NestJS**, aplicando as melhores práticas de engenharia de software:
 
 - ✅ TDD (Test-Driven Development)
