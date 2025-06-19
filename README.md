@@ -22,6 +22,8 @@ Backend completo para um sistema de E-commerce desenvolvido com **NestJS**, apli
 
 ## ⚙️ Como rodar o projeto
 
+> **Atenção:** É requisito que o banco de dados esteja rodando antes de iniciar a aplicação. Siga as instruções da seção abaixo para subir o banco via Docker ou manualmente.
+
 ```bash
 # Instale as dependências
 npm install
