@@ -7,7 +7,7 @@ export default class RegisterProductUseCase {
   constructor(readonly productsRepository: IProductsRepository) {}
 
   async execute(registerProductDto: CreateProductDto) {
-    const { name, price, sex, description, ratingId, availableSizeQtt } =
+    const { name, price, sex, description, image_url, availableSizeQtt } =
       registerProductDto;
 
     const product = new Product({
@@ -16,7 +16,8 @@ export default class RegisterProductUseCase {
       price,
       sex,
       description,
-      ratingId,
+      ratingId: 0,
+      image_url,
       availableSizeQtt,
     });
 

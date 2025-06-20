@@ -7,8 +7,9 @@ export class Product {
   ratingId: number;
   availableSizeQtt: { [size: string]: number };
   appliedDiscountPercentage: number;
+  imageUrl: string;
 
-  constructor(props) {
+  constructor(props: NewProductProps) {
     this.id = props.id;
     this.name = props.name;
     this.price = Number(props.price);
@@ -16,6 +17,7 @@ export class Product {
     this.description = props.description;
     this.ratingId = props.ratingId;
     this.availableSizeQtt = props.availableSizeQtt;
+    this.imageUrl = props.image_url;
   }
 
   isAvailable(size: string) {
@@ -56,3 +58,15 @@ export class Product {
     return this.price;
   }
 }
+
+type NewProductProps = {
+  id: number;
+  name: string;
+  price: number;
+  sex: string;
+  description: string;
+  ratingId: number;
+  availableSizeQtt: { [size: string]: number };
+  image_url?: string;
+  appliedDiscountPercentage?: number;
+};

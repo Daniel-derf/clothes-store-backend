@@ -49,13 +49,14 @@ export default class ProductsPostgresRepository implements IProductsRepository {
   async save(product: Product): Promise<void> {
     if (product.id === 0) {
       const { id } = await connection.one(
-        'insert into store.products (name, price, sex, description, "ratingId") values ($1, $2, $3, $4, $5) returning id',
+        'insert into store.products (name, price, sex, description, "ratingId", image_url) values ($1, $2, $3, $4, $5, $6) returning id',
         [
           product.name,
           product.price,
           product.sex,
           product.description,
           product.ratingId,
+          product.imageUrl,
         ],
       );
 

@@ -59,6 +59,7 @@ describe('HTTP Integration Tests', () => {
             expect(product).toHaveProperty('description');
             expect(product).toHaveProperty('ratingId');
             expect(product).toHaveProperty('availableSizeQtt');
+            expect(product).toHaveProperty('imageUrl');
           });
         });
     });
@@ -138,7 +139,7 @@ describe('HTTP Integration Tests', () => {
         price: 150,
         sex: 'M',
         description: 'New product description',
-        ratingId: 1,
+        image_url: 'www.image.com.br',
         availableSizeQtt: { gg: 10 },
       };
 
@@ -160,7 +161,7 @@ describe('HTTP Integration Tests', () => {
           expect(product).toHaveProperty('price', newProduct.price);
           expect(product).toHaveProperty('sex', newProduct.sex);
           expect(product).toHaveProperty('description', newProduct.description);
-          expect(product).toHaveProperty('ratingId', newProduct.ratingId);
+          expect(product).toHaveProperty('imageUrl', newProduct.image_url);
           expect(product).toHaveProperty(
             'availableSizeQtt',
             newProduct.availableSizeQtt,

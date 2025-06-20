@@ -7,7 +7,8 @@ create table store.products (
   price NUMERIC(10,2),
   sex CHAR(1),
   description TEXT,
-  "ratingId" INT
+  "ratingId" INT,
+  image_url VARCHAR(50)
 );
 
 create table store.available_sizes (
@@ -48,12 +49,12 @@ insert into store.users (name, password, email, profile) values
 ('testUser4', '$2b$10$20IJmuLaI1P.duklED9Whu6QmkO2vgy.70K7mxZzZkmNvAh38YjAq', 'teste4@email.com', 'admin');
 
 -- products
-insert into store.products (name, price, sex, description, "ratingId") values
-('Product 1', 100, 'M', 'Description 1', 1),
-('Product 2', 200, 'F', 'Description 2', 2),
-('Product 3', 300, 'M', 'Description 3', 3),
-('Product 4', 400, 'F', 'Description 4', 4),
-('Product 5', 500, 'M', 'Description 5', 5);
+insert into store.products (name, price, sex, description, "ratingId", image_url) values
+('Product 1', 100, 'M', 'Description 1', 1, 'www.image.com'),
+('Product 2', 200, 'F', 'Description 2', 2, 'www.image.com'),
+('Product 3', 300, 'M', 'Description 3', 3, 'www.image.com'),
+('Product 4', 400, 'F', 'Description 4', 4, 'www.image.com'),
+('Product 5', 500, 'M', 'Description 5', 5, 'www.image.com');
 
 -- product sizes
 insert into store.available_sizes (size, quantity, "productId") values

@@ -14,7 +14,7 @@ export class CreateProductDto {
   description: string;
 
   @ApiProperty()
-  ratingId: number;
+  image_url: string;
 
   @ApiProperty({
     type: 'object',
