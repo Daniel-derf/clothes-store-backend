@@ -8,7 +8,7 @@ create table store.products (
   sex CHAR(1),
   description TEXT,
   "ratingId" INT,
-  image_url VARCHAR(50)
+  image_url VARCHAR(300)
 );
 
 create table store.available_sizes (
